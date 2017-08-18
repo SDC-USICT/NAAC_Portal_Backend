@@ -1,0 +1,4 @@
+[spacing]
+bears = SpaceConsistencyBear
+files = **/views.py, **/models.py
+use_spaces = True
