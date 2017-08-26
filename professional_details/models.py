@@ -15,3 +15,6 @@ class Professional(models.Model):
     submitted = models.CharField(max_length=100)
     awarded = models.CharField(max_length=100)
     year = models.IntegerField(null=False, blank=False)
+
+    class Meta:
+        db_table = 'professional'

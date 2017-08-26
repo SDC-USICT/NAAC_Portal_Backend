@@ -12,3 +12,5 @@ class Extra(models.Model):
     year = models.IntegerField()
 
 
+    class Meta:
+        db_table = 'extras'

@@ -9,3 +9,6 @@ class Membership(models.Model):
     type = models.CharField(max_length=100)
     academic_body = models.CharField(max_length=100)
     university_agency = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'membership'

@@ -14,3 +14,6 @@ class Projects(models.Model):
     date_completed = models.DateField()
     amnt_sanctioned = models.CharField(max_length=100)
     status = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'project'

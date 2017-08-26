@@ -9,9 +9,15 @@ class Subject(models.Model):
     code = models.CharField(max_length=100)
     credit = models.IntegerField()
 
+    class Meta:
+        db_table = 'subject'
+
 
 class SubjectsTaken(models.Model):
     employee_id = models.ForeignKey(to=Employee)
     subjects = models.ManyToManyField(to=Subject)
     year = models.CharField(max_length=100)
     school = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'subjects_taken'

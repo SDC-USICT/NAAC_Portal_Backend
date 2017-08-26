@@ -10,3 +10,6 @@ class Workshop(models.Model):
     date = models.DateField()
     duration = models.CharField(max_length=100)
     organization = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'workshop'

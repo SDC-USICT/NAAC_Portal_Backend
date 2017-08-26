@@ -14,3 +14,6 @@ class Employee(models.Model):
     designation = models.CharField(max_length=100)
     room_no = models.CharField(max_length=10)
     school = models.CharField(max_length=10)
+
+    class Meta:
+        db_table = 'employee'
