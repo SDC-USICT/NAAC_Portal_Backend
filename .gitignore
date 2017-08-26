@@ -1,6 +1,6 @@
 .idea/**
 **.orig
-*/__pycache__
+__pycache__
 **.pyc
 **.py[yod]
 /**.pyc
