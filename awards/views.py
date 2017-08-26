@@ -9,11 +9,11 @@ def award(request):
     if request.method == 'GET':
         awardform = AwardForm()
         print (awardform)
-        return render(request,'form.html', {'awardform': awardform})
+        return render(request,'award.html', {'awardform': awardform})
     if request.method == 'POST':
         print (request.POST)
         awardform = AwardForm(request.POST or None)
         if awardform.is_valid():
             save_it = awardform.save(commit =False)
             save_it.save()
-        return HttpResponse('<h1>Your application is saved'</h1>)
+        return HttpResponse('<h1>Your application is saved</h1>')

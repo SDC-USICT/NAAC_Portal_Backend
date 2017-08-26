@@ -16,11 +16,16 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
-from employee.views import login
+from employee.views import *
 from patents.views import patent
+from awards.views import award
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^hello/', login),
+    url(r'^login/', login),
     url(r'^patent/', patent),
+    url(r'^award/', award),
+    url(r'^school/', school),
+    url(r'^dashboard/', dashboard),
+
 ]
