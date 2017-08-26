@@ -10,3 +10,6 @@ class Patents(models.Model):
     patenting_agency = models.CharField(max_length=100)
     year_application = models.IntegerField()
     year_grant = models.IntegerField()
+
+    class Meta:
+        db_table = 'patents'

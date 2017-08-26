@@ -10,3 +10,6 @@ class Awards(models.Model):
     organisation = models.CharField(max_length=100)
     month = models.CharField(max_length=100)
     year = models.IntegerField()
+
+    class Meta:
+        db_table = 'awards'

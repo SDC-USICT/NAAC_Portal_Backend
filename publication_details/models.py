@@ -15,6 +15,9 @@ class JournalPapers(models.Model):
     month = models.CharField(max_length=12)
     author = models.ManyToManyField(to=Employee, related_name='employee_jp_author')
 
+    class Meta:
+        db_table = 'publication_details'
+
 
 class Conference(models.Model):
     employee = models.ForeignKey(Employee, related_name='employee_conf')
@@ -28,6 +31,9 @@ class Conference(models.Model):
     international_national = models.CharField(max_length=100)
     author = models.ManyToManyField(to=Employee, related_name='employee_conf_author')
 
+    class Meta:
+        db_table = 'conference'
+
 
 class BookChapters(models.Model):
     employee = models.ForeignKey(Employee, related_name='employee_book_chapter')
@@ -40,9 +46,15 @@ class BookChapters(models.Model):
     month = models.CharField(max_length=12)
     author = models.ForeignKey(to=Employee, related_name='employee_book_chapter_author')
 
+    class Meta:
+        db_table = 'book_chapters'
+
 
 class Book(models.Model):
     employee = models.ForeignKey(Employee, related_name='employee_book')
     title_of_book = models.CharField(max_length=100)
     isbn = models.CharField(max_length=100)
     year = models.IntegerField()
+
+    class Meta:
+        db_table = 'book'
