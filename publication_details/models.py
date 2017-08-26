@@ -52,11 +52,10 @@ class BookChapters(models.Model):
 
 
 class Book(models.Model):
-    employee = models.ForeignKey(Employee, related_name='employee_book', verbose_name='Employee ID')
-    title = models.CharField("Book Title",max_length=100, blank=True, null=True)
-    isbn = models.CharField("ISBN",max_length=100)
-    year = models.IntegerField("Year")
-    coauthor = models.TextField(max_length=200, verbose_name='Co Authors',blank=True,null=True)
+    employee = models.ForeignKey(Employee, related_name='employee_book')
+    title_of_book = models.CharField(max_length=100)
+    isbn = models.CharField(max_length=100)
+    year = models.IntegerField()
 
     class Meta:
         db_table = 'book'

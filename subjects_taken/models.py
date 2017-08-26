@@ -12,6 +12,9 @@ class Subject(models.Model):
     class Meta:
         db_table = 'subject'
 
+    class Meta:
+        db_table = 'subject'
+
 
 class SubjectsTaken(models.Model):
     employee = models.ForeignKey(to=Employee , verbose_name='Employee ID')
