@@ -17,8 +17,10 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from employee.views import login
+from patents.views import patent
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^hello/', login),
+    url(r'^patent/', patent),
 ]

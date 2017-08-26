@@ -2,3 +2,5 @@
 **.orig
 */__pycache__
 **.pyc
+**.py[yod]
+/**.pyc
