@@ -7,8 +7,8 @@ from .forms import GuestLecturerForm
 # Create your views here.
 def guestlecturer(request):
     if request.method == 'GET':
-        guestlecturerform = AwardForm()
-        print (awardform)
+        guestlecturerform = GuestLecturerForm()
+        print (guestlecturerform)
         return render(request,'form.html', {'guestlecturerform': guestlecturerform})
     if request.method == 'POST':
         print (request.POST)
