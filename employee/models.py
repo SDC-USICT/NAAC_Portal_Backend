@@ -4,7 +4,6 @@ from django.db import models
 
 
 class Employee(models.Model):
-
     instructor_id = models.CharField(max_length=10, primary_key=True, verbose_name='Employee ID')
     name = models.CharField("Name", max_length=200)
     email = models.EmailField("Email",max_length=200)

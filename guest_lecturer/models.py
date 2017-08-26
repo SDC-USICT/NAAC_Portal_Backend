@@ -14,3 +14,4 @@ class GuestLecturer(models.Model):
 
     class Meta:
         db_table = 'guest_lecturer'
+
