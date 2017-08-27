@@ -23,5 +23,4 @@ from awards.views import award
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/schools', schools),
-    url(r'^rest-auth/', include('rest_auth.urls'))
 ]
