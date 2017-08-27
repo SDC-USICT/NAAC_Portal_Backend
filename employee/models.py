@@ -15,5 +15,17 @@ class Employee(models.Model):
     room_no = models.CharField(max_length=10)
     school = models.CharField(max_length=10)
 
+    def as_json(self):
+        return dict(
+            instructor_id=self.instructor_id,
+            name=self.name,
+            email=self.email,
+            phone=self.phone,
+            date_of_joining=self.date_of_joining,
+            designation=self.designation,
+            room_no=self.room_no,
+            school=self.school
+        )
+
     class Meta:
         db_table = 'employee'
