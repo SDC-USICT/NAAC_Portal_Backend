@@ -27,5 +27,6 @@ urlpatterns = [
     url(r'^award/', award),
     url(r'^school/', school),
     url(r'^dashboard/', dashboard),
+    url(r'^extra/',extra),
 
 ]

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+{% include 'includes/head.html' %}
+{% include "includes/header.html" %}
+<body>
+<center><h3>No. of PHD Students Form</h3> </center>
+    <div class="row">
+        <div class="col s12 m4 offset-m4 l4 offset-l4">
+            <form action="/phdstudent/" method="post">
+                {% csrf_token %}
+                {{ phdstudentform.as_p }}
+                <center><input type="Submit" class="btn" name="Next"></center>
+            </form>
+        </div>
+    </div>
+
+</body>
+{% include "includes/footer.html" %}
+</html>
