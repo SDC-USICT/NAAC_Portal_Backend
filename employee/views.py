@@ -6,6 +6,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from employee.models import Employee
+from professional_details.models import Professional
+from workshop.models import Workshop
+from project.models import Projects
+from patents.models import Patents
 
 
 @require_http_methods(["GET", "POST"])
