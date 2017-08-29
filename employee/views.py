@@ -1,5 +1,6 @@
 import json
 
+import django
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -28,6 +29,33 @@ def schools(request):
 
     return JsonResponse(schools, safe=False)
 
+
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
+def columns(request):
+
+    arr = []
+    for m in django.apps.apps.get_models():
+        arr.append(m.__name__)
+
+    extras =  [
+        'LogEntry',
+        'Permission',
+        'Group',
+        'User',
+        'ContentType',
+        'Session'
+       ]
+
+    final = [item for item in arr if item not in extras]
+
+    res = {}
+
+    for modl in final:
+        kls = eval(modl)
+        res[modl] = [f.name for f in kls._meta.get_fields()]
+
+    return JsonResponse(res, safe=False)
 
 @require_http_methods(["GET", "POST"])
 def sections(request):
