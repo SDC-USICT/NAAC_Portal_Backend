@@ -25,4 +25,10 @@ urlpatterns = [
     url(r'^api/schools', schools),
     url(r'^api/login', login),
     url(r'^api/sections', sections),
+    url(r'^api/awards', awards),
+    url(r'^api/$', employee),
+    url(r'^api/extra', extra),
+    url(r'^api/guest', guest),
+    url(r'^api/membership', moab),
+
 ]

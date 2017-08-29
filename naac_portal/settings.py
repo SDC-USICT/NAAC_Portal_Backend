@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'employee',
-    'awards',
+    'awards.apps.AwardsConfig',
     'extra_activities',
     'guest_lecturer',
     'moab',
