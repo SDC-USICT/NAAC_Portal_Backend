@@ -11,6 +11,22 @@ from workshop.models import Workshop
 from project.models import Projects
 from patents.models import Patents
 
+@require_http_methods(["GET", "POST"])
+def sections(request):
+    sections = [
+        'Awards',
+        'Extra Activities',
+        'Guest Lecturer',
+        'MOAB',
+        'Patents',
+        'PhD Students',
+        'Professional Details',
+        'Projects',
+        'Publication Details',
+        'Subjects Taken'
+    ]
+
+    return JsonResponse(sections, safe=False)
 
 @require_http_methods(["GET", "POST"])
 def schools(request):
