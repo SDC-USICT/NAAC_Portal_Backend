@@ -345,3 +345,118 @@ def subjectTaken(request):
             'error' : 'true'
         }
     return JsonResponse(res, safe=False)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def JournalPaper(request):
+    request = json.loads(request.encode('utf-8'))
+
+    username = request['empid']
+    title_of_paper = request['title_of_paper']
+    name_and_publisher = request['name_and_publisher']
+    volume_no = request['volume_no']
+    issn_isbn = request['issn_isbn']
+    indexing = request['indexing']
+    year = request['year']
+    month = request['month']
+    author = request['author']
+
+    try:
+        a, created = JournalPapers.objects.update_or_create(instructor_id=username,title_of_paper=title_of_paper,
+                                                            name_and_publisher=name_and_publisher,volume_no=volume_no,
+                                                            issn_isbn=issn_isbn,indexing=indexing,year=year,month=month,author=author)
+        a.save()
+        res = {
+            'success' : 'true'
+        }
+    except Exception:
+        res = {
+            'error' : 'true'
+        }
+    return JsonResponse(res, safe=False)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def Conference(request):
+    request = json.loads(request.encode('utf-8'))
+
+    username = request['empid']
+    title_of_paper = request['title_of_paper']
+    name_and_publisher = request['name_and_publisher']
+    volume_no = request['volume_no']
+    issn_isbn = request['issn_isbn']
+    indexing = request['indexing']
+    year = request['year']
+    month = request['month']
+    author = request['author']
+    international_national = request['international_national']
+
+    try:
+        a, created = Conference.objects.update_or_create(instructor_id=username,title_of_paper=title_of_paper,
+                                                            name_and_publisher=name_and_publisher,volume_no=volume_no,
+                                                            issn_isbn=issn_isbn,indexing=indexing,year=year,month=month,
+                                                            international_national=international_national,author=author)
+        a.save()
+        res = {
+            'success' : 'true'
+        }
+    except Exception:
+        res = {
+            'error' : 'true'
+        }
+    return JsonResponse(res, safe=False)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def BookChapter(request):
+    request = json.loads(request.encode('utf-8'))
+
+    username = request['empid']
+    title_of_paper = request['title_of_paper']
+    book_title_and_publisher = request['book_title_and_publisher']
+    page_no = request['page_no']
+    isbn = request['isbn']
+    indexing = request['indexing']
+    year = request['year']
+    month = request['month']
+    author = request['author']
+
+    try:
+        a, created = BookChapters.objects.update_or_create(instructor_id=username,title_of_paper=title_of_paper,
+                                                            book_title_and_publisher=book_title_and_publisher,page_no=page_no,
+                                                            isbn=isbn,indexing=indexing,year=year,month=month,author=author)
+        a.save()
+        res = {
+            'success' : 'true'
+        }
+    except Exception:
+        res = {
+            'error' : 'true'
+        }
+    return JsonResponse(res, safe=False)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def BookChapter(request):
+    request = json.loads(request.encode('utf-8'))
+
+    username = request['empid']
+    title_of_paper = request['title_of_paper']
+    isbn = request['isbn']
+    year = request['year']
+
+    try:
+        a, created = Book.objects.update_or_create(instructor_id=username,title_of_paper=title_of_paper,isbn=isbn,year=year,)
+        a.save()
+        res = {
+            'success' : 'true'
+        }
+    except Exception:
+        res = {
+            'error' : 'true'
+        }
+    return JsonResponse(res, safe=False)
