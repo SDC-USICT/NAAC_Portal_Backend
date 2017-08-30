@@ -6,10 +6,10 @@ from employee.models import Employee
 
 class Awards(models.Model):
     employee_id = models.ForeignKey(to=Employee, related_name='employee_awards')
-    title = models.CharField(max_length=100)
-    organisation = models.CharField(max_length=100)
-    month = models.CharField(max_length=100)
-    year = models.IntegerField()
+    title = models.CharField("Title",max_length=100)
+    organisation = models.CharField("Organization",max_length=100)
+    month = models.CharField("Month",max_length=100)
+    year = models.IntegerField("Year")
 
     class Meta:
         db_table = 'awards'
