@@ -4,7 +4,6 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from employee.models import Employee
 from awards.models import Awards
 from extra_activities.models import Extra
 from guest_lecturer.models import GuestLecturer
@@ -28,7 +27,7 @@ def schools(request):
 
     return JsonResponse(schools, safe=False)
 
-
+@csrf_exempt
 @require_http_methods(["GET", "POST"])
 def sections(request):
     sections = [
@@ -55,7 +54,8 @@ def login(request):
     password = request['password']
 
     try:
-        a, created = Employee.objects.get(instructor_id=username, password=password)
+        e = Employee.objects.get(instructor_id=username)
+        a, created = Employee.objects.get(instructor_id=e, password=password)
         a.save()
         res = {
             'success' : 'true',
@@ -79,7 +79,8 @@ def awards(request):
     year = request['year']
 
     try:
-        a, created = Awards.objects.update_or_create(instructor_id=username,title= title, organisation= org, month= month, year= year)
+        e = Employee.objects.get(instructor_id=username)
+        a, created = Awards.objects.update_or_create(instructor_id=e,title= title, organisation= org, month= month, year= year)
         a.save()
         res = {
             'success' : 'true',
@@ -106,7 +107,8 @@ def employee(request):
     password = request['password']
 
     try:
-        a, created = Employee.objects.update_or_create(instructor_id=username,name= name, email= email, phone= phone, designation= designation,date_of_joining=date_join,room_no=romm,school=school,password=password)
+        e = Employee.objects.get(instructor_id=username)
+        a, created = Employee.objects.update_or_create(instructor_id=e,name= name, email= email, phone= phone, designation= designation,date_of_joining=date_join,room_no=romm,school=school,password=password)
         a.save()
         res = {
             'success' : 'true',
@@ -128,7 +130,8 @@ def extra(request):
     year = request['year']
 
     try:
-        a, created = Extra.objects.update_or_create(instructor_id=username,name= name, department= dept, details= details, year= year)
+        e = Employee.objects.get(instructor_id=username)
+        a, created = Extra.objects.update_or_create(instructor_id=e,name= name, department= dept, details= details, year= year)
         a.save()
         res = {
             'success' : 'true',
@@ -151,7 +154,8 @@ def guest(request):
     topic = request['topic']
 
     try:
-        a, created = GuestLecturer.objects.update_or_create(instructor_id=username,nature= nature, institute= inst, date= date, topic= topic)
+        e = Employee.objects.get(instructor_id=username)
+        a, created = GuestLecturer.objects.update_or_create(instructor_id=e,nature= nature, institute= inst, date= date, topic= topic)
         a.save()
         res = {
             'success' : 'true',
@@ -173,7 +177,8 @@ def moab(request):
     univ = request['university_agency']
 
     try:
-        a, created = Membership.objects.update_or_create(instructor_id=username,type= type, academic_body= acad_body, university_agency= univ)
+        e = Employee.objects.get(instructor_id=username)
+        a, created = Membership.objects.update_or_create(instructor_id=e,type= type, academic_body= acad_body, university_agency= univ)
         a.save()
         res = {
             'success' : 'true',
@@ -190,7 +195,7 @@ def moab(request):
 def professional(request):
     request = json.loads(request.encode('utf-8'))
 
-    empid_id = request['employee_id']
+    empid_id = request['empid']
     academic_experience_id = request['academic_experience']
     industrial_exp_id = request['industrial_exp']
     qualification_before = request['qualification_before']
@@ -202,7 +207,8 @@ def professional(request):
     year_id = request['year']
 
     try:
-        a, created = Professional.objects.update_or_create(instructor_id=empid_id,academic_experience= academic_experience_id,
+        e = Employee.objects.get(instructor_id=empid_id)
+        a, created = Professional.objects.update_or_create(instructor_id=e,academic_experience= academic_experience_id,
                                                          industrial_exp= industrial_exp_id, qualification_before= qualification_before,
                                                          qualification_after=qualification_after,phds=phds_id,pursuing=pursuing_id,
                                                          submitted=submitted_id,awarded=awarded_id,year= year_id)
@@ -229,7 +235,8 @@ def workshop(request):
     organization_id =  request['organization']
 
     try:
-        a, created = Workshop.objects.update_or_create(instructor_id=empid_id,name= name_id,
+        e = Employee.objects.get(instructor_id=empid_id)
+        a, created = Workshop.objects.update_or_create(instructor_id=e,name= name_id,
                                                          date= date_id, duration= duration_id,
                                                          organisation=organization_id)
         a.save()
@@ -259,7 +266,8 @@ def projects(request):
     status_id =  request['status']
 
     try:
-        a, created = Projects.objects.update_or_create(instructor_id=username,title=title_id,pi=pi_id,
+        e = Employee.objects.get(instructor_id=username)
+        a, created = Projects.objects.update_or_create(instructor_id=e,title=title_id,pi=pi_id,
                                               copi=copi_id,sponsors=sponsors_id,date_of_award=date_of_award_id,
                                               date_completed=date_completed_id,amnt_sanctioned=amnt_sanctioned_id,
                                               status=status_id)
@@ -287,7 +295,8 @@ def patents(request):
 
 
     try:
-        a, created = Patents.objects.update_or_create(instructor_id=username,name=name_id,patenting_agency=patenting_agency_id,
+        e = Employee.objects.get(instructor_id=username)
+        a, created = Patents.objects.update_or_create(instructor_id=e,name=name_id,patenting_agency=patenting_agency_id,
                                              year_application=year_application_id,year_grant=year_grant_id)
         a.save()
         res = {
@@ -335,7 +344,8 @@ def subjectTaken(request):
 
 
     try:
-        a, created = SubjectsTaken.objects.update_or_create(instructor_id=username,subjects=subjects,year=year,school=school)
+        e = Employee.objects.get(instructor_id=username)
+        a, created = SubjectsTaken.objects.update_or_create(instructor_id=e,subjects=subjects,year=year,school=school)
         a.save()
         res = {
             'success' : 'true'
@@ -363,7 +373,8 @@ def JournalPaper(request):
     author = request['author']
 
     try:
-        a, created = JournalPapers.objects.update_or_create(instructor_id=username,title_of_paper=title_of_paper,
+        e = Employee.objects.get(instructor_id=username)
+        a, created = JournalPapers.objects.update_or_create(instructor_id=e,title_of_paper=title_of_paper,
                                                             name_and_publisher=name_and_publisher,volume_no=volume_no,
                                                             issn_isbn=issn_isbn,indexing=indexing,year=year,month=month,author=author)
         a.save()
@@ -394,7 +405,8 @@ def Conference(request):
     international_national = request['international_national']
 
     try:
-        a, created = Conference.objects.update_or_create(instructor_id=username,title_of_paper=title_of_paper,
+        e = Employee.objects.get(instructor_id=username)
+        a, created = Conference.objects.update_or_create(instructor_id=e,title_of_paper=title_of_paper,
                                                             name_and_publisher=name_and_publisher,volume_no=volume_no,
                                                             issn_isbn=issn_isbn,indexing=indexing,year=year,month=month,
                                                             international_national=international_national,author=author)
@@ -425,7 +437,8 @@ def BookChapter(request):
     author = request['author']
 
     try:
-        a, created = BookChapters.objects.update_or_create(instructor_id=username,title_of_paper=title_of_paper,
+        e = Employee.objects.get(instructor_id=username)
+        a, created = BookChapters.objects.update_or_create(instructor_id=e,title_of_paper=title_of_paper,
                                                             book_title_and_publisher=book_title_and_publisher,page_no=page_no,
                                                             isbn=isbn,indexing=indexing,year=year,month=month,author=author)
         a.save()
@@ -450,7 +463,8 @@ def BookChapter(request):
     year = request['year']
 
     try:
-        a, created = Book.objects.update_or_create(instructor_id=username,title_of_paper=title_of_paper,isbn=isbn,year=year,)
+        e = Employee.objects.get(instructor_id=username)
+        a, created = Book.objects.update_or_create(instructor_id=e,title_of_paper=title_of_paper,isbn=isbn,year=year,)
         a.save()
         res = {
             'success' : 'true'
