@@ -24,7 +24,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/schools', schools),
     url(r'^api/login', login),
-    url(r'^api/sections', sections),
     url(r'^api/awards', awards),
     url(r'^api/$', employee),
     url(r'^api/extra', extra),

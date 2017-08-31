@@ -53,26 +53,20 @@ def columns(request):
 
     for modl in final:
         kls = eval(modl)
-        res[modl] = [f.name for f in kls._meta.get_fields()]
+        res[modl] = []
+        for f in kls._meta.get_fields():
+            try:
+                res[modl].append({
+                    'name' : f.name,
+                    'verbose' : f.verbose_name
+                })
+            except Exception:
+                res[modl].append({
+                    'name': f.name,
+                })
 
+    del res['Employee']
     return JsonResponse(res, safe=False)
-
-@require_http_methods(["GET", "POST"])
-def sections(request):
-    sections = [
-        'Awards',
-        'Extra Activities',
-        'Guest Lecturer',
-        'MOAB',
-        'Patents',
-        'PhD Students',
-        'Professional Details',
-        'Projects',
-        'Publication Details',
-        'Subjects Taken'
-    ]
-
-    return JsonResponse(sections, safe=False)
 
 
 @csrf_exempt
