@@ -1,6 +1,7 @@
 import json
 
 import django
+from django.core import serializers
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -348,7 +349,7 @@ def subject(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def subjectTaken(request):
-    request = json.loads(request.encode('utf-8'))
+    request = json.loads(request.body.decode('utf-8'))
 
     username = request['empid']
     subjects = request['subjects']
@@ -372,12 +373,24 @@ def subjectTaken(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def get_data(request):
-    request = json.loads(request.encode('utf-8'))
+    request = json.loads(request.body.decode('utf-8'))
 
     empid = request['empid']
-    klass = eval(request['kls'])
-    e = Employee.objects.get(instructor_id=empid)
-    result = klass.objects.filter(employee_id=e)
-    res = serializers.serialize('json', result)
+    kls = request['kls']
 
-    return JsonResponse(res, safe='False')
+    arr = []
+    for m in django.apps.apps.get_models():
+        arr.append(m.__name__)
+
+    if kls in arr:
+        klass = eval(kls)
+        e = Employee.objects.get(instructor_id=empid)
+        result = klass.objects.filter(employee_id=e)
+        res = serializers.serialize('json', result)
+    else:
+        print('Invalid Request!')
+        res = {
+            'error' : "Invalid!"
+        }
+
+    return JsonResponse(json.loads(res), safe=False)

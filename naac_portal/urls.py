@@ -30,5 +30,6 @@ urlpatterns = [
     url(r'^api/guest', guest),
     url(r'^api/membership', moab),
     url(r'^api/columns', columns),
+    url(r'^api/get', get_data),
 
 ]
