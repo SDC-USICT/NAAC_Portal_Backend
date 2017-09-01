@@ -367,3 +367,17 @@ def subjectTaken(request):
             'error' : 'true'
         }
     return JsonResponse(res, safe=False)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def get_data(request):
+    request = json.loads(request.encode('utf-8'))
+
+    empid = request['empid']
+    klass = eval(request['kls'])
+    e = Employee.objects.get(instructor_id=empid)
+    result = klass.objects.filter(employee_id=e)
+    res = serializers.serialize('json', result)
+
+    return JsonResponse(res, safe='False')

@@ -10,6 +10,7 @@ class GuestLecturer(models.Model):
     institute = models.CharField("Institute Name",max_length=100)
     date = models.DateField("Date")
     topic = models.CharField("Topic",max_length=100)
+    year = models.TextField("Year", max_length="4", blank=True, null=True)
 
     class Meta:
         db_table = 'guest_lecturer'
