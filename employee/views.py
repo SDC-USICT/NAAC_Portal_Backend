@@ -45,7 +45,8 @@ def columns(request):
         'Group',
         'User',
         'ContentType',
-        'Session'
+        'Session',
+        'Subject'
        ]
 
     final = [item for item in arr if item not in extras]
