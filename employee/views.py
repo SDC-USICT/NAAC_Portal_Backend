@@ -395,3 +395,13 @@ def get_data(request):
         }
 
     return JsonResponse(json.loads(res), safe=False)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def employee_details(request):
+    request = json.loads(request.body.decode('utf-8'))
+
+    empid = request['empid']
+    e = Employee.objects.get(instructor_id=empid)
+    res = serializers.serialize('json',e)
+    return JsonResponse(json.loads(res),safe =False)

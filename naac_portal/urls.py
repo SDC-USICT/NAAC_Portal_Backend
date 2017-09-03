@@ -31,5 +31,6 @@ urlpatterns = [
     url(r'^api/membership', moab),
     url(r'^api/columns', columns),
     url(r'^api/get', get_data),
+    url(r'^api/employee_details',employee_details)
 
 ]
