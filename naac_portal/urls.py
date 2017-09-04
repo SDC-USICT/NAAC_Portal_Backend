@@ -22,7 +22,7 @@ from awards.views import award
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/schools', schools),
+    url(r'^api/school', school_details),
     url(r'^api/login', login),
     url(r'^api/awards', awards),
     url(r'^api/$', employee),
@@ -31,5 +31,7 @@ urlpatterns = [
     url(r'^api/membership', moab),
     url(r'^api/columns', columns),
     url(r'^api/get', get_data),
-
+    url(r'^api/post', post_data),
+    url(r'^api/employee',employee_details),
+    url(r'^api/emppost',update_emp_details)
 ]

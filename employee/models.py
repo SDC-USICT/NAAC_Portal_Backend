@@ -9,7 +9,7 @@ class Employee(models.Model):
     name = models.CharField("Name", max_length=200)
     email = models.EmailField("Email",max_length=200)
     phone = models.BigIntegerField("Phone")
-    date_of_joining = models.DateField("Date of Joining", max_length=1000, blank=True, null=True)
+    date_of_joining = models.TextField("Date of Joining", max_length=1000, blank=True, null=True)
     password = models.CharField("Password", max_length=100)
     designation = models.CharField("Designation", max_length=100)
     room_no = models.CharField("Room No", max_length=10)

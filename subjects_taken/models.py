@@ -14,7 +14,7 @@ class Subject(models.Model):
 
 
 class SubjectsTaken(models.Model):
-    employee_id = models.ForeignKey(to=Employee , verbose_name='Employee ID')
+    employee = models.ForeignKey(to=Employee , verbose_name='Employee ID')
     subjects = models.ManyToManyField(to=Subject)
     year = models.CharField(verbose_name = "Year",max_length=100)
     school = models.CharField("School",max_length=100)
