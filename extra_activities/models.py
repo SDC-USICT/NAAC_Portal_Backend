@@ -5,8 +5,8 @@ from employee.models import Employee
 
 
 class Extra(models.Model):
-    employee_id = models.ForeignKey(to=Employee, verbose_name='Employee ID')
-    name = models.CharField("Name",max_length=100)
+    employee = models.ForeignKey(to=Employee, verbose_name='Employee ID')
+    title = models.CharField("Name",max_length=100)
     department = models.CharField("Department",max_length=100)
     details = models.CharField("Details",max_length=100)
     year = models.IntegerField("Year")

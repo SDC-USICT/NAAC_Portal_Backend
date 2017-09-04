@@ -2,10 +2,12 @@ import json
 
 import django
 from django.core import serializers
+from django.core.exceptions import FieldError
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
+from employee.mm_handler import handler
 from employee.models import Employee
 from awards.models import Awards
 from extra_activities.models import Extra
@@ -17,6 +19,10 @@ from project.models import *
 from publication_details.models import *
 from subjects_taken.models import *
 from workshop.models import *  # add rebase--continue
+
+
+# TODO: ADD VALIDATOR FOR CHECKING IF kls FROM FRONTEND
+# TODO: IS A PART OF ALREADY EXISTENT MODELS IN BACKEND
 
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
@@ -79,11 +85,15 @@ def login(request):
     password = request['password']
 
     try:
-        a, created = Employee.objects.get(instructor_id=username, password=password)
-        a.save()
-        res = {
+        a = Employee.objects.filter(instructor_id=username, password=password)
+        if a.exists():
+            res = {
             'success' : 'true',
-        }
+            }
+        else:
+            res = {
+                'error' : 'true'
+            }
     except Exception:
         res = {
             'error' : 'true'
@@ -386,7 +396,7 @@ def get_data(request):
     if kls in arr:
         klass = eval(kls)
         e = Employee.objects.get(instructor_id=empid)
-        result = klass.objects.filter(employee_id=e)
+        result = klass.objects.filter(employee=e)
         res = serializers.serialize('json', result)
     else:
         print('Invalid Request!')
@@ -395,3 +405,109 @@ def get_data(request):
         }
 
     return JsonResponse(json.loads(res), safe=False)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def post_data(request):
+    request = json.loads(request.body.decode('utf-8'))
+    print(request)
+    data = request['data']
+    kls = request['kls']
+    klass = eval(kls)
+
+    mtm_classes = [
+        'Book',
+        'BookChapters',
+        'JournalPapers',
+        'Conference',
+        'SubjectsTaken',
+        'Projects'
+    ]
+
+    if kls in mtm_classes:
+        res = {
+            'error' : 'true'
+        }
+
+        return JsonResponse(res, safe=False)
+
+    for d in data:
+        try:
+            pk = d.pop('pk')
+            d.pop('model')
+            try:
+                d.pop('$$hashKey')
+            except KeyError:
+                print('Hash not found!')
+            empid = d.pop('employee')
+
+            # New element, therefore no pk assigned yet
+            if not pk:
+                e = Employee.objects.get(instructor_id=empid)
+                k = klass.objects.create(employee=e,**d)
+                k.save()
+
+            # Old element, just update its data
+            else:
+                k = klass.objects.filter(id=pk)
+                if k.exists():
+                    klass.objects.filter(id=pk).update(**d)
+                else:
+                    res = {
+                        'error' : 'Employee ID does not exist'
+                    }
+                    return JsonResponse(res, safe=False)
+
+        except KeyError:
+
+            empid = d.pop('employee')
+            e = Employee.objects.get(instructor_id=empid)
+            k = klass.objects.create(employee=e, **d)
+            k.save()
+
+    res = {
+        'success' : 'true'
+    }
+
+    klass = eval(kls)
+    e = Employee.objects.get(instructor_id=empid)
+    result = klass.objects.filter(employee=e)
+    final = serializers.serialize('json', result)
+
+    res['data'] = json.loads(final)
+    return JsonResponse(res, safe=False)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def employee_details(request):
+    request = json.loads(request.body.decode('utf-8'))
+
+    empid = request['empid']
+    print(empid)
+    e = Employee.objects.get(instructor_id=empid)
+    res = serializers.serialize('json',[e])
+    return JsonResponse(json.loads(res),safe =False)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def update_emp_details(request):
+    request = json.loads(request.body.decode('utf-8'))
+    data = request['data']
+    pk = data.pop('pk')
+    Employee.objects.filter(instructor_id=pk).update(**data)
+    e = Employee.objects.get(instructor_id=pk)
+    res = serializers.serialize('json',[e])
+    return JsonResponse(json.loads(res),safe =False)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def school_details(request):
+    request = json.loads(request.body.decode('utf-8'))
+    school = request['school']
+    e = Employee.objects.filter(school=school)
+    res = serializers.serialize('json',e)
+    return JsonResponse(json.loads(res),safe =False)
