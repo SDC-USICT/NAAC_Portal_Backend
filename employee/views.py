@@ -3,6 +3,8 @@ import json
 import django
 from django.core import serializers
 from django.core.exceptions import FieldError
+from django.core.files.storage import FileSystemStorage
+from django.core.mail.backends import console
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -510,4 +512,23 @@ def school_details(request):
     school = request['school']
     e = Employee.objects.filter(school=school)
     res = serializers.serialize('json',e)
+    return JsonResponse(json.loads(res),safe =False)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def imageUpload(request):
+    if request.method == 'POST':
+        console.log(request)
+        myfile = request.FILES['myfile']
+        fs = FileSystemStorage()
+        filename = fs.save(myfile.name, myfile)
+        uploaded_file_url = fs.url(filename)
+        res = {
+            'success' : 'true',
+            'url' : uploaded_file_url
+        }
+    else:
+        res = {
+            'success' : 'false'
+        }
     return JsonResponse(json.loads(res),safe =False)

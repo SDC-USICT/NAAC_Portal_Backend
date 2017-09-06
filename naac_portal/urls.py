@@ -33,5 +33,6 @@ urlpatterns = [
     url(r'^api/get', get_data),
     url(r'^api/post', post_data),
     url(r'^api/employee',employee_details),
-    url(r'^api/emppost',update_emp_details)
+    url(r'^api/emppost',update_emp_details),
+    url(r'^api/image',imageUpload),
 ]

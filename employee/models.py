@@ -24,7 +24,7 @@ class Employee(models.Model):
             date_of_joining=self.date_of_joining,
             designation=self.designation,
             room_no=self.room_no,
-            school=self.school
+            school=self.school,
         )
 
     class Meta:
