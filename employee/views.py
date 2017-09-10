@@ -1,4 +1,5 @@
 import json
+import os
 
 import django
 from django.core import serializers
@@ -15,6 +16,7 @@ from awards.models import Awards
 from extra_activities.models import Extra
 from guest_lecturer.models import GuestLecturer
 from moab.models import Membership
+from naac_portal.settings import BASE_DIR
 from patents.models import *
 from professional_details.models import *
 from project.models import *
@@ -538,21 +540,33 @@ def school_details(request):
     res = serializers.serialize('json',e)
     return JsonResponse(json.loads(res),safe =False)
 
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def imageUpload(request):
     if request.method == 'POST':
-        console.log(request)
-        myfile = request.FILES['myfile']
-        fs = FileSystemStorage()
-        filename = fs.save(myfile.name, myfile)
+        print(request)
+        myfile = request.FILES['image']
+        n = request.POST['name']
+        fs = OverwriteStorage(location=BASE_DIR + os.sep + 'static' + os.sep + 'images')
+        filename = fs.save(n + '.png', myfile)
         uploaded_file_url = fs.url(filename)
         res = {
             'success' : 'true',
-            'url' : uploaded_file_url
+            'url' : '/static' + uploaded_file_url
         }
     else:
         res = {
             'success' : 'false'
         }
-    return JsonResponse(json.loads(res),safe =False)
+    return JsonResponse(res,safe =False)
+
+
+class OverwriteStorage(FileSystemStorage):
+
+    def _save(self, name, content):
+        self.delete(name)
+        return super(OverwriteStorage, self)._save(name, content)
+
+    def get_available_name(self, name, max_length=None):
+        return name

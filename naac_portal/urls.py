@@ -19,6 +19,9 @@ from django.contrib import admin
 from employee.views import *
 from patents.views import patent
 from awards.views import award
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -34,6 +37,6 @@ urlpatterns = [
     url(r'^api/post', post_data),
     url(r'^api/employee',employee_details),
     url(r'^api/emppost',update_emp_details),
-    url(r'^api/image',imageUpload),
+    url(r'^api/upload',imageUpload),
     url(r'^api/delete', delete_data),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
