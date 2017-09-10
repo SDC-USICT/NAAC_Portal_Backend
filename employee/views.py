@@ -54,7 +54,8 @@ def columns(request):
         'User',
         'ContentType',
         'Session',
-        'Subject'
+        'Subject',
+        'CoAuthors'
        ]
 
     final = [item for item in arr if item not in extras]
@@ -418,21 +419,6 @@ def post_data(request):
     kls = request['kls']
     klass = eval(kls)
 
-    mtm_classes = [
-        'Book',
-        'BookChapters',
-        'JournalPapers',
-        'Conference',
-        'SubjectsTaken',
-        'Projects'
-    ]
-
-    if kls in mtm_classes:
-        res = {
-            'error' : 'true'
-        }
-
-        return JsonResponse(res, safe=False)
 
     for d in data:
         try:
@@ -479,6 +465,44 @@ def post_data(request):
 
     res['data'] = json.loads(final)
     return JsonResponse(res, safe=False)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def delete_data(request):
+    request = json.loads(request.body.decode('utf-8'))
+    print(request)
+    data = request['data']
+    kls = request['kls']
+    empid = request['empid']
+    klass = eval(kls)
+    data.pop('model')
+    pk = data.pop('pk')
+
+    try:
+        entry = klass.objects.get(id=pk)
+        entry.delete()
+
+    except Exception:
+        res = {
+            'error' : 'true'
+
+        }
+
+        return JsonResponse(res, safe=False)
+
+    res = {
+        'success' : 'true'
+    }
+
+    klass = eval(kls)
+    e = Employee.objects.get(instructor_id=empid)
+    result = klass.objects.filter(employee=e)
+    final = serializers.serialize('json', result)
+
+    res['data'] = json.loads(final)
+    return JsonResponse(res, safe=False)
+
 
 
 @csrf_exempt

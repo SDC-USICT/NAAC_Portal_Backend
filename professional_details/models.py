@@ -6,7 +6,7 @@ from employee.models import Employee
 
 class Professional(models.Model):
     employee = models.ForeignKey(to=Employee, verbose_name='Employee ID')
-    academic_experience = models.IntegerField("Academic Experience")
+    title = models.IntegerField("Academic Experience")
     industrial_exp = models.IntegerField("Industrial Experience")
     qualification_before = models.CharField("Highest Qualification",max_length=100)
     qualification_after = models.CharField("Qualification Added",max_length=100)

@@ -35,4 +35,5 @@ urlpatterns = [
     url(r'^api/employee',employee_details),
     url(r'^api/emppost',update_emp_details),
     url(r'^api/image',imageUpload),
+    url(r'^api/delete', delete_data),
 ]
