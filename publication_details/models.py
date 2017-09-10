@@ -13,10 +13,10 @@ class JournalPapers(models.Model):
     indexing = models.CharField("Indexing",max_length=100)
     year = models.IntegerField("Year")
     month = models.CharField("Month",max_length=12)
-    author = models.ManyToManyField(to=Employee, related_name='employee_jp_author', verbose_name='Authors')
+    coauthor = models.TextField(max_length=200, verbose_name='Co Authors', blank=True,null=True)
 
     class Meta:
-        db_table = 'publication_details'
+        db_table = 'journal_papers'
 
 
 class Conference(models.Model):
@@ -29,7 +29,7 @@ class Conference(models.Model):
     year = models.IntegerField("Year")
     month = models.CharField("Month",max_length=12)
     international_national = models.CharField("International/National",max_length=100)
-    author = models.ManyToManyField(to=Employee, related_name='employee_conf_author', verbose_name='Authors')
+    coauthor = models.TextField(max_length=200, verbose_name='Co Authors',blank=True,null=True)
 
     class Meta:
         db_table = 'conference'
@@ -44,7 +44,7 @@ class BookChapters(models.Model):
     indexing = models.CharField("Indexing",max_length=100)
     year = models.IntegerField("Year")
     month = models.CharField("Month",max_length=12)
-    author = models.ManyToManyField(to=Employee, related_name='employee_bc_author', verbose_name='Authors')
+    coauthor = models.TextField(max_length=200, verbose_name='Co Authors',blank=True,null=True)
 
 
     class Meta:
@@ -56,7 +56,7 @@ class Book(models.Model):
     title = models.CharField("Book Title",max_length=100, blank=True, null=True)
     isbn = models.CharField("ISBN",max_length=100)
     year = models.IntegerField("Year")
-    author = models.ManyToManyField(to=Employee, related_name='employee_book_author', verbose_name='Authors')
+    coauthor = models.TextField(max_length=200, verbose_name='Co Authors',blank=True,null=True)
 
     class Meta:
         db_table = 'book'
