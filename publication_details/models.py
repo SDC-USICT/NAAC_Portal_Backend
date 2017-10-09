@@ -13,6 +13,8 @@ class JournalPapers(models.Model):
     indexing = models.CharField("Indexing",max_length=100)
     year = models.IntegerField("Year")
     month = models.CharField("Month",max_length=12)
+    hindex = models.CharField("H-Index of Journal using Scimago (if Scopus, SCI-Ex or SCI)", max_length=100, blank=True, null=True)
+    impact_factor = models.CharField("Impact Factor if SCI-Ex or SCI", max_length=100, blank=True, null=True)
     coauthor = models.TextField(max_length=200, verbose_name='Co Authors', blank=True,null=True)
 
     class Meta:

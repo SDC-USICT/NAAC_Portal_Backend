@@ -4,3 +4,4 @@ __pycache__/**
 **.pyc
 **.py[yod]
 /**.pyc
+sqlite.db
