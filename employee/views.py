@@ -86,6 +86,7 @@ def columns(request):
 @require_http_methods(["GET", "POST"])
 def login(request):
     request = json.loads(request.body.decode('utf-8'))
+    print(request)
     username = request['empid']
     password = request['password']
 
@@ -549,7 +550,7 @@ def imageUpload(request):
         myfile = request.FILES['image']
         n = request.POST['name']
         fs = OverwriteStorage(location=BASE_DIR + os.sep + 'static' + os.sep + 'images')
-        filename = fs.save(n + '.png', myfile)
+        filename = fs.save(n + '.jpg', myfile)
         uploaded_file_url = fs.url(filename)
         res = {
             'success' : 'true',
