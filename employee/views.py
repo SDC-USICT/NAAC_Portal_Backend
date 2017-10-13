@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 
@@ -417,11 +418,21 @@ def get_data(request):
 @require_http_methods(["POST"])
 def post_data(request):
     request = json.loads(request.body.decode('utf-8'))
-    print(request)
     data = request['data']
+    mdata = copy.deepcopy(data)
     kls = request['kls']
     klass = eval(kls)
 
+    coauthor_classes = [
+        'Book',
+        'BookChapters',
+        'JournalPapers',
+        'Conference'
+    ]
+
+
+    print(data)
+    print(mdata)
 
     for d in data:
         try:
@@ -457,10 +468,15 @@ def post_data(request):
             k = klass.objects.create(employee=e, **d)
             k.save()
 
+    print(data)
+    print(mdata)
+
     res = {
         'success' : 'true'
     }
-
+    print(mdata)
+    if kls in coauthor_classes:
+         handler(kls, mdata)
     klass = eval(kls)
     e = Employee.objects.get(instructor_id=empid)
     result = klass.objects.filter(employee=e)
@@ -562,6 +578,64 @@ def imageUpload(request):
         }
     return JsonResponse(res,safe =False)
 
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def verify_coauthor(request):
+    request = json.loads(request.body.decode('utf-8'))
+
+    kls = request['type']
+    email = request['email']
+    klass = eval(kls)
+    pk = request['pk']
+    status = request['status']
+    c = klass.objects.get(id=pk)
+    tmp = []
+    tmp2 = []
+    for cs in c.coauthor.split(';'):
+        if cs.split(':')[1] == email and status == '1':
+            cs = cs.split(':')
+            cs[2] = '1'
+            print(cs)
+
+            o = Employee.objects.filter(email=email)
+            if o.exists():
+                o = o[0]
+                cs[0] = o.name
+
+            cs = ':'.join(cs)
+            print(cs)
+            tmp.append(cs)
+
+        elif status == '0':
+            pass
+        else:
+            tmp2.append(cs)
+            tmp.append(cs)
+
+    tmp = ';'.join(tmp)
+    c.coauthor = tmp
+    c.save()
+
+    tmp2 = ';'.join(tmp2)
+    if status == '1':
+        e = Employee.objects.filter(email=email)
+        if e.exists():
+            e = e[0]
+            extra = klass.objects.get(id=pk)
+            extra.pk = None
+            extra.employee = e
+            extra.author = e.name
+            extra.coauthor = tmp2 + ';' + c.employee.name + ':' + c.employee.email + ':1'
+            extra.save()
+
+    print(request)
+    res = {
+        'success': 'true'
+    }
+
+
+    return JsonResponse(res, safe=False)
 
 class OverwriteStorage(FileSystemStorage):
 
