@@ -87,7 +87,6 @@ def columns(request):
 @require_http_methods(["GET", "POST"])
 def login(request):
     request = json.loads(request.body.decode('utf-8'))
-    print(request)
     username = request['empid']
     password = request['password']
 
@@ -405,13 +404,20 @@ def get_data(request):
         e = Employee.objects.get(instructor_id=empid)
         result = klass.objects.filter(employee=e)
         res = serializers.serialize('json', result)
+        i=0
+        res = json.loads(res)
+        for f in res:
+            tmp = res[i]['pk']
+            res[i] = res[i]['fields']
+            res[i]['pk'] = tmp
+            i = i + 1
     else:
         print('Invalid Request!')
         res = {
             'error' : "Invalid!"
         }
 
-    return JsonResponse(json.loads(res), safe=False)
+    return JsonResponse(res, safe=False)
 
 
 @csrf_exempt
@@ -430,14 +436,9 @@ def post_data(request):
         'Conference'
     ]
 
-
-    print(data)
-    print(mdata)
-
     for d in data:
         try:
             pk = d.pop('pk')
-            d.pop('model')
             try:
                 d.pop('$$hashKey')
             except KeyError:
@@ -468,21 +469,34 @@ def post_data(request):
             k = klass.objects.create(employee=e, **d)
             k.save()
 
-    print(data)
-    print(mdata)
-
     res = {
         'success' : 'true'
     }
-    print(mdata)
+    klass = eval(kls)
+    e = Employee.objects.get(instructor_id=empid)
+    result = klass.objects.filter(employee=e)
+    final1 = serializers.serialize('json', result)
+
+    i = 0
+
+    final1= json.loads(final1)
+    for f in final1:
+        tmp = final1[i]['pk']
+        final1[i] = final1[i]['fields']
+        final1[i]['pk'] = tmp
+        i = i + 1
+
     if kls in coauthor_classes:
-         handler(kls, mdata)
+        handler(kls, final1)
+
     klass = eval(kls)
     e = Employee.objects.get(instructor_id=empid)
     result = klass.objects.filter(employee=e)
     final = serializers.serialize('json', result)
 
-    res['data'] = json.loads(final)
+
+
+    res['data'] = final1
     return JsonResponse(res, safe=False)
 
 
@@ -490,12 +504,10 @@ def post_data(request):
 @require_http_methods(["POST"])
 def delete_data(request):
     request = json.loads(request.body.decode('utf-8'))
-    print(request)
     data = request['data']
     kls = request['kls']
     empid = request['empid']
     klass = eval(kls)
-    data.pop('model')
     pk = data.pop('pk')
 
     try:
@@ -518,10 +530,16 @@ def delete_data(request):
     e = Employee.objects.get(instructor_id=empid)
     result = klass.objects.filter(employee=e)
     final = serializers.serialize('json', result)
+    i = 0
 
-    res['data'] = json.loads(final)
+    final = json.loads(final)
+    for f in final:
+        tmp = final[i]['pk']
+        final[i] = final[i]['fields']
+        final[i]['pk'] = tmp
+        i = i + 1
+    res['data'] = final
     return JsonResponse(res, safe=False)
-
 
 
 @csrf_exempt
@@ -530,7 +548,6 @@ def employee_details(request):
     request = json.loads(request.body.decode('utf-8'))
 
     empid = request['empid']
-    print(empid)
     e = Employee.objects.get(instructor_id=empid)
     res = serializers.serialize('json',[e])
     return JsonResponse(json.loads(res),safe =False)
@@ -562,7 +579,6 @@ def school_details(request):
 @require_http_methods(["POST"])
 def imageUpload(request):
     if request.method == 'POST':
-        print(request)
         myfile = request.FILES['image']
         n = request.POST['name']
         fs = OverwriteStorage(location=BASE_DIR + os.sep + 'static' + os.sep + 'images')
@@ -596,7 +612,6 @@ def verify_coauthor(request):
         if cs.split(':')[1] == email and status == '1':
             cs = cs.split(':')
             cs[2] = '1'
-            print(cs)
 
             o = Employee.objects.filter(email=email)
             if o.exists():
@@ -604,7 +619,6 @@ def verify_coauthor(request):
                 cs[0] = o.name
 
             cs = ':'.join(cs)
-            print(cs)
             tmp.append(cs)
 
         elif status == '0':
@@ -629,13 +643,12 @@ def verify_coauthor(request):
             extra.coauthor = tmp2 + ';' + c.employee.name + ':' + c.employee.email + ':1'
             extra.save()
 
-    print(request)
     res = {
         'success': 'true'
     }
 
-
     return JsonResponse(res, safe=False)
+
 
 class OverwriteStorage(FileSystemStorage):
 
