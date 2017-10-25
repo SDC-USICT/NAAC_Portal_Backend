@@ -16,4 +16,4 @@ def moab(request):
         if moabform.is_valid():
             save_it = moabform.save(commit =False)
             save_it.save()
-        return HttpResponse('<h1>Your application is saved'</h1>)
+        return HttpResponse('<h1>Your application is saved</h1>')
