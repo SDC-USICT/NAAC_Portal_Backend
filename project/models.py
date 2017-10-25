@@ -12,8 +12,8 @@ class Projects(models.Model):
     date_completed = models.TextField("Date of Completed")
     amnt_sanctioned = models.CharField("Amount Sanctioned",max_length=100)
     status = models.CharField("Status",max_length=100)
-    author = models.CharField(max_length=200, verbose_name='Principle Investigator')
-    copi = models.TextField(max_length=200, verbose_name='Co Principle Investigators', blank=True,null=True)
+    author = models.CharField(max_length=200, verbose_name='Principle Investigator', blank=True, null=True)
+    coauthor = models.TextField(max_length=200, verbose_name='Co Principle Investigators', blank=True,null=True)
 
 
     class Meta:
