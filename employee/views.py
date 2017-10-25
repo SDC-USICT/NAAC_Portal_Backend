@@ -45,12 +45,11 @@ def schools(request):
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
 def columns(request):
-
     arr = []
     for m in django.apps.apps.get_models():
         arr.append(m.__name__)
 
-    extras =  [
+    extras = [
         'LogEntry',
         'Permission',
         'Group',
@@ -59,7 +58,7 @@ def columns(request):
         'Session',
         'Subject',
         'CoAuthors'
-       ]
+    ]
 
     final = [item for item in arr if item not in extras]
 
@@ -71,8 +70,8 @@ def columns(request):
         for f in kls._meta.get_fields():
             try:
                 res[modl].append({
-                    'name' : f.name,
-                    'verbose' : f.verbose_name
+                    'name': f.name,
+                    'verbose': f.verbose_name
                 })
             except Exception:
                 res[modl].append({
@@ -94,15 +93,15 @@ def login(request):
         a = Employee.objects.filter(instructor_id=username, password=password)
         if a.exists():
             res = {
-            'success' : 'true',
+                'success': 'true',
             }
         else:
             res = {
-                'error' : 'true'
+                'error': 'true'
             }
     except Exception:
         res = {
-            'error' : 'true'
+            'error': 'true'
         }
 
     return JsonResponse(res, safe=False)
@@ -119,14 +118,15 @@ def awards(request):
     year = request['year']
 
     try:
-        a, created = Awards.objects.update_or_create(instructor_id=username,title= title, organisation= org, month= month, year= year)
+        a, created = Awards.objects.update_or_create(instructor_id=username, title=title, organisation=org, month=month,
+                                                     year=year)
         a.save()
         res = {
-            'success' : 'true',
+            'success': 'true',
         }
     except Exception:
         res = {
-            'error' : 'true'
+            'error': 'true'
         }
     return JsonResponse(res, safe=False)
 
@@ -146,16 +146,19 @@ def employee(request):
     password = request['password']
 
     try:
-        a, created = Employee.objects.update_or_create(instructor_id=username,name= name, email= email, phone= phone, designation= designation,date_of_joining=date_join,room_no=romm,school=school,password=password)
+        a, created = Employee.objects.update_or_create(instructor_id=username, name=name, email=email, phone=phone,
+                                                       designation=designation, date_of_joining=date_join, room_no=romm,
+                                                       school=school, password=password)
         a.save()
         res = {
-            'success' : 'true',
+            'success': 'true',
         }
     except Exception:
         res = {
-            'error' : 'true'
+            'error': 'true'
         }
     return JsonResponse(res, safe=False)
+
 
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
@@ -168,14 +171,15 @@ def extra(request):
     year = request['year']
 
     try:
-        a, created = Extra.objects.update_or_create(instructor_id=username,name= name, department= dept, details= details, year= year)
+        a, created = Extra.objects.update_or_create(instructor_id=username, name=name, department=dept, details=details,
+                                                    year=year)
         a.save()
         res = {
-            'success' : 'true',
+            'success': 'true',
         }
     except Exception:
         res = {
-            'error' : 'true'
+            'error': 'true'
         }
     return JsonResponse(res, safe=False)
 
@@ -191,14 +195,15 @@ def guest(request):
     topic = request['topic']
 
     try:
-        a, created = GuestLecturer.objects.update_or_create(instructor_id=username,nature= nature, institute= inst, date= date, topic= topic)
+        a, created = GuestLecturer.objects.update_or_create(instructor_id=username, nature=nature, institute=inst,
+                                                            date=date, topic=topic)
         a.save()
         res = {
-            'success' : 'true',
+            'success': 'true',
         }
     except Exception:
         res = {
-            'error' : 'true'
+            'error': 'true'
         }
     return JsonResponse(res, safe=False)
 
@@ -213,14 +218,15 @@ def moab(request):
     univ = request['university_agency']
 
     try:
-        a, created = Membership.objects.update_or_create(instructor_id=username,type= type, academic_body= acad_body, university_agency= univ)
+        a, created = Membership.objects.update_or_create(instructor_id=username, type=type, academic_body=acad_body,
+                                                         university_agency=univ)
         a.save()
         res = {
-            'success' : 'true',
+            'success': 'true',
         }
     except Exception:
         res = {
-            'error' : 'true'
+            'error': 'true'
         }
     return JsonResponse(res, safe=False)
 
@@ -234,7 +240,7 @@ def professional(request):
     academic_experience_id = request['academic_experience']
     industrial_exp_id = request['industrial_exp']
     qualification_before = request['qualification_before']
-    qualification_after =  request['qualification_after']
+    qualification_after = request['qualification_after']
     phds_id = request['phds']
     pursuing_id = request['pursuing']
     submitted_id = request['submitted']
@@ -242,17 +248,20 @@ def professional(request):
     year_id = request['year']
 
     try:
-        a, created = Professional.objects.update_or_create(instructor_id=empid_id,academic_experience= academic_experience_id,
-                                                         industrial_exp= industrial_exp_id, qualification_before= qualification_before,
-                                                         qualification_after=qualification_after,phds=phds_id,pursuing=pursuing_id,
-                                                         submitted=submitted_id,awarded=awarded_id,year= year_id)
+        a, created = Professional.objects.update_or_create(instructor_id=empid_id,
+                                                           academic_experience=academic_experience_id,
+                                                           industrial_exp=industrial_exp_id,
+                                                           qualification_before=qualification_before,
+                                                           qualification_after=qualification_after, phds=phds_id,
+                                                           pursuing=pursuing_id,
+                                                           submitted=submitted_id, awarded=awarded_id, year=year_id)
         a.save()
         res = {
-            'success' : 'true',
+            'success': 'true',
         }
     except Exception:
         res = {
-            'error' : 'true'
+            'error': 'true'
         }
     return JsonResponse(res, safe=False)
 
@@ -266,19 +275,19 @@ def workshop(request):
     name_id = request['name']
     date_id = request['date']
     duration_id = request['duration']
-    organization_id =  request['organization']
+    organization_id = request['organization']
 
     try:
-        a, created = Workshop.objects.update_or_create(instructor_id=empid_id,name= name_id,
-                                                         date= date_id, duration= duration_id,
-                                                         organisation=organization_id)
+        a, created = Workshop.objects.update_or_create(instructor_id=empid_id, name=name_id,
+                                                       date=date_id, duration=duration_id,
+                                                       organisation=organization_id)
         a.save()
         res = {
-            'success' : 'true',
+            'success': 'true',
         }
     except Exception:
         res = {
-            'error' : 'true'
+            'error': 'true'
         }
     return JsonResponse(res, safe=False)
 
@@ -293,23 +302,25 @@ def projects(request):
     pi_id = request['pi']
     copi_id = request['copi']
     sponsors_id = request['sponsors']
-    date_of_award_id =  request['date_of_award']
-    date_completed_id =  request['date_completed']
-    amnt_sanctioned_id =  request['amnt_sanctioned']
-    status_id =  request['status']
+    date_of_award_id = request['date_of_award']
+    date_completed_id = request['date_completed']
+    amnt_sanctioned_id = request['amnt_sanctioned']
+    status_id = request['status']
 
     try:
-        a, created = Projects.objects.update_or_create(instructor_id=username,title=title_id,pi=pi_id,
-                                              copi=copi_id,sponsors=sponsors_id,date_of_award=date_of_award_id,
-                                              date_completed=date_completed_id,amnt_sanctioned=amnt_sanctioned_id,
-                                              status=status_id)
+        a, created = Projects.objects.update_or_create(instructor_id=username, title=title_id, pi=pi_id,
+                                                       copi=copi_id, sponsors=sponsors_id,
+                                                       date_of_award=date_of_award_id,
+                                                       date_completed=date_completed_id,
+                                                       amnt_sanctioned=amnt_sanctioned_id,
+                                                       status=status_id)
         a.save()
         res = {
-            'success' : 'true'
+            'success': 'true'
         }
     except Exception:
         res = {
-            'error' : 'true'
+            'error': 'true'
         }
     return JsonResponse(res, safe=False)
 
@@ -323,19 +334,19 @@ def patents(request):
     name_id = request['name']
     patenting_agency_id = request['patenting_agency']
     year_application_id = request['year_application']
-    year_grant_id =  request['year_grant']
-
+    year_grant_id = request['year_grant']
 
     try:
-        a, created = Patents.objects.update_or_create(instructor_id=username,name=name_id,patenting_agency=patenting_agency_id,
-                                             year_application=year_application_id,year_grant=year_grant_id)
+        a, created = Patents.objects.update_or_create(instructor_id=username, name=name_id,
+                                                      patenting_agency=patenting_agency_id,
+                                                      year_application=year_application_id, year_grant=year_grant_id)
         a.save()
         res = {
-            'success' : 'true'
+            'success': 'true'
         }
     except Exception:
         res = {
-            'error' : 'true'
+            'error': 'true'
         }
     return JsonResponse(res, safe=False)
 
@@ -349,16 +360,15 @@ def subject(request):
     code = request['code']
     credit = request['credit']
 
-
     try:
-        a, created = Subject.objects.update_or_create(name=name,code=code,credit=credit)
+        a, created = Subject.objects.update_or_create(name=name, code=code, credit=credit)
         a.save()
         res = {
-            'success' : 'true'
+            'success': 'true'
         }
     except Exception:
         res = {
-            'error' : 'true'
+            'error': 'true'
         }
     return JsonResponse(res, safe=False)
 
@@ -373,16 +383,16 @@ def subjectTaken(request):
     year = request['year']
     school = request['school']
 
-
     try:
-        a, created = SubjectsTaken.objects.update_or_create(instructor_id=username,subjects=subjects,year=year,school=school)
+        a, created = SubjectsTaken.objects.update_or_create(instructor_id=username, subjects=subjects, year=year,
+                                                            school=school)
         a.save()
         res = {
-            'success' : 'true'
+            'success': 'true'
         }
     except Exception:
         res = {
-            'error' : 'true'
+            'error': 'true'
         }
     return JsonResponse(res, safe=False)
 
@@ -404,7 +414,7 @@ def get_data(request):
         e = Employee.objects.get(instructor_id=empid)
         result = klass.objects.filter(employee=e)
         res = serializers.serialize('json', result)
-        i=0
+        i = 0
         res = json.loads(res)
         for f in res:
             tmp = res[i]['pk']
@@ -414,7 +424,7 @@ def get_data(request):
     else:
         print('Invalid Request!')
         res = {
-            'error' : "Invalid!"
+            'error': "Invalid!"
         }
 
     return JsonResponse(res, safe=False)
@@ -425,6 +435,7 @@ def get_data(request):
 def post_data(request):
     request = json.loads(request.body.decode('utf-8'))
     data = request['data']
+    print(data)
     mdata = copy.deepcopy(data)
     kls = request['kls']
     klass = eval(kls)
@@ -436,50 +447,50 @@ def post_data(request):
         'Conference'
     ]
 
-    for d in data:
+    d = data[0]
+
+    try:
+        pk = d.pop('pk')
         try:
-            pk = d.pop('pk')
-            try:
-                d.pop('$$hashKey')
-            except KeyError:
-                print('Hash not found!')
-            empid = d.pop('employee')
-
-            # New element, therefore no pk assigned yet
-            if not pk:
-                e = Employee.objects.get(instructor_id=empid)
-                k = klass.objects.create(employee=e,**d)
-                k.save()
-
-            # Old element, just update its data
-            else:
-                k = klass.objects.filter(id=pk)
-                if k.exists():
-                    klass.objects.filter(id=pk).update(**d)
-                else:
-                    res = {
-                        'error' : 'Employee ID does not exist'
-                    }
-                    return JsonResponse(res, safe=False)
-
+            d.pop('$$hashKey')
         except KeyError:
-
-            empid = d.pop('employee')
+            print('Hash not found!')
+        empid = d.pop('employee')  # New element, therefore no pk assigned yet
+        if not pk:
             e = Employee.objects.get(instructor_id=empid)
             k = klass.objects.create(employee=e, **d)
             k.save()
 
+        # Old element, just update its data
+        else:
+            k = klass.objects.filter(id=pk)
+            if k.exists():
+                klass.objects.filter(id=pk).update(**d)
+            else:
+                res = {
+                    'error': 'Employee ID does not exist'
+                }
+                return JsonResponse(res, safe=False)
+
+    except KeyError:
+
+        empid = d.pop('employee')
+        e = Employee.objects.get(instructor_id=empid)
+        k = klass.objects.create(employee=e, **d)
+        k.save()
+
+
     res = {
-        'success' : 'true'
+        'success': 'true'
     }
     klass = eval(kls)
     e = Employee.objects.get(instructor_id=empid)
-    result = klass.objects.filter(employee=e)
+    result = klass.objects.filter(employee=e, pk=k.pk)
     final1 = serializers.serialize('json', result)
 
     i = 0
 
-    final1= json.loads(final1)
+    final1 = json.loads(final1)
     for f in final1:
         tmp = final1[i]['pk']
         final1[i] = final1[i]['fields']
@@ -493,8 +504,6 @@ def post_data(request):
     e = Employee.objects.get(instructor_id=empid)
     result = klass.objects.filter(employee=e)
     final = serializers.serialize('json', result)
-
-
 
     res['data'] = final1
     return JsonResponse(res, safe=False)
@@ -516,14 +525,14 @@ def delete_data(request):
 
     except Exception:
         res = {
-            'error' : 'true'
+            'error': 'true'
 
         }
 
         return JsonResponse(res, safe=False)
 
     res = {
-        'success' : 'true'
+        'success': 'true'
     }
 
     klass = eval(kls)
@@ -549,8 +558,8 @@ def employee_details(request):
 
     empid = request['empid']
     e = Employee.objects.get(instructor_id=empid)
-    res = serializers.serialize('json',[e])
-    return JsonResponse(json.loads(res),safe =False)
+    res = serializers.serialize('json', [e])
+    return JsonResponse(json.loads(res), safe=False)
 
 
 @csrf_exempt
@@ -561,8 +570,8 @@ def update_emp_details(request):
     pk = data.pop('pk')
     Employee.objects.filter(instructor_id=pk).update(**data)
     e = Employee.objects.get(instructor_id=pk)
-    res = serializers.serialize('json',[e])
-    return JsonResponse(json.loads(res),safe =False)
+    res = serializers.serialize('json', [e])
+    return JsonResponse(json.loads(res), safe=False)
 
 
 @csrf_exempt
@@ -571,8 +580,8 @@ def school_details(request):
     request = json.loads(request.body.decode('utf-8'))
     school = request['school']
     e = Employee.objects.filter(school=school)
-    res = serializers.serialize('json',e)
-    return JsonResponse(json.loads(res),safe =False)
+    res = serializers.serialize('json', e)
+    return JsonResponse(json.loads(res), safe=False)
 
 
 @csrf_exempt
@@ -585,14 +594,14 @@ def imageUpload(request):
         filename = fs.save(n + '.jpg', myfile)
         uploaded_file_url = fs.url(filename)
         res = {
-            'success' : 'true',
-            'url' : '/static' + uploaded_file_url
+            'success': 'true',
+            'url': '/static' + uploaded_file_url
         }
     else:
         res = {
-            'success' : 'false'
+            'success': 'false'
         }
-    return JsonResponse(res,safe =False)
+    return JsonResponse(res, safe=False)
 
 
 @csrf_exempt
@@ -651,7 +660,6 @@ def verify_coauthor(request):
 
 
 class OverwriteStorage(FileSystemStorage):
-
     def _save(self, name, content):
         self.delete(name)
         return super(OverwriteStorage, self)._save(name, content)
