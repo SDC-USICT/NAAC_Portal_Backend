@@ -15,7 +15,7 @@ from employee.mm_handler import handler
 from employee.models import Employee
 from awards.models import Awards
 from extra_activities.models import Extra
-from guest_lecturer.models import GuestLecturer
+from guest_lecturer.models import GuestLecture
 from moab.models import Membership
 from naac_portal.settings import BASE_DIR
 from patents.models import *
@@ -195,8 +195,8 @@ def guest(request):
     topic = request['topic']
 
     try:
-        a, created = GuestLecturer.objects.update_or_create(instructor_id=username, nature=nature, institute=inst,
-                                                            date=date, topic=topic)
+        a, created = GuestLecture.objects.update_or_create(instructor_id=username, nature=nature, institute=inst,
+                                                           date=date, topic=topic)
         a.save()
         res = {
             'success': 'true',
