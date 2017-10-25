@@ -433,7 +433,12 @@ def get_data(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def post_data(request):
+    myfile = request.FILES.get('image')
+    print(request.FILES)
+
+    print(myfile)
     request = json.loads(request.body.decode('utf-8'))
+    print(request)
     data = request['data']
     print(data)
     mdata = copy.deepcopy(data)
@@ -448,6 +453,12 @@ def post_data(request):
     ]
 
     d = data[0]
+
+    if kls == 'SubjectsTaken' :
+        try:
+            d.pop('image')
+        except KeyError:
+            print('No Image!')
 
     try:
         pk = d.pop('pk')
@@ -605,6 +616,35 @@ def imageUpload(request):
         n = request.POST['name']
         fs = OverwriteStorage(location=BASE_DIR + os.sep + 'static' + os.sep + 'images')
         filename = fs.save(n + '.jpg', myfile)
+        uploaded_file_url = fs.url(filename)
+        res = {
+            'success': 'true',
+            'url': '/static' + uploaded_file_url
+        }
+    else:
+        res = {
+            'success': 'false'
+        }
+    return JsonResponse(res, safe=False)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def subjectImageUpload(request):
+    if request.method == 'POST':
+        myfile = request.FILES['image']
+        n = request.POST['name']
+        p = request.POST['filename']
+        try:
+            os.mkdir(BASE_DIR + os.sep + 'static' + os.sep + 'images' + os.sep + n)
+            os.mkdir(BASE_DIR + os.sep + 'static' + os.sep + 'images' + os.sep + n + os.sep + 'subjects')
+
+        except OSError as e:
+            if e.errno == 17:
+                pass
+
+        fs = OverwriteStorage(location=BASE_DIR + os.sep + 'static' + os.sep + 'images' + os.sep + n + os.sep + 'subjects')
+        filename = fs.save(p + '.jpg', myfile)
         uploaded_file_url = fs.url(filename)
         res = {
             'success': 'true',
