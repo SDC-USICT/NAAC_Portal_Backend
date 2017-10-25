@@ -26,7 +26,7 @@ def handler(kls, data):
                     if search.exists():
                         stremail = FRONTEND + '/#/approve?id=' + str(d['pk']) + '&title=' + \
                                    d['title'] +'&email=' + sd.split(':')[1] + '&type=' +  kls + \
-                        '&invitee=' + (e.name).replace(' ', '') + '&copi=' + copi_flag
+                        '&invitee=' + (e.name).replace(' ', '') + '&copi=' + str(copi_flag)
 
 
                         mail = EmailMessage('NAAC Portal ' + spec +' Verification Mail', stremail, to=[sd.split(':')[1]])
