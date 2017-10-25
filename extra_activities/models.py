@@ -9,7 +9,7 @@ class Extra(models.Model):
     title = models.CharField("Name",max_length=100)
     department = models.CharField("Department",max_length=100)
     details = models.CharField("Details",max_length=100)
-    year = models.IntegerField("Year")
+    year = models.CharField("Year",max_length=4)
 
 
     class Meta:

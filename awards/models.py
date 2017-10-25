@@ -10,7 +10,7 @@ class Awards(models.Model):
     awardType = models.CharField("awardType",max_length=100)
     organisation = models.CharField("Organization",max_length=100)
     month = models.CharField("Month",max_length=100)
-    year = models.IntegerField("Year")
+    year = models.CharField("Year",max_length=4)
 
     class Meta:
         db_table = 'awards'
