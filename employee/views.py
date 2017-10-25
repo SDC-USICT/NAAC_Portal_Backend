@@ -485,19 +485,22 @@ def post_data(request):
     }
     klass = eval(kls)
     e = Employee.objects.get(instructor_id=empid)
-    result = klass.objects.filter(employee=e, pk=k.pk)
-    final1 = serializers.serialize('json', result)
 
-    i = 0
+    if type(k) != django.db.models.query.QuerySet and kls in coauthor_classes:
 
-    final1 = json.loads(final1)
-    for f in final1:
-        tmp = final1[i]['pk']
-        final1[i] = final1[i]['fields']
-        final1[i]['pk'] = tmp
-        i = i + 1
+        result = klass.objects.filter(employee=e, pk=k.pk)
+        final1 = serializers.serialize('json', result)
 
-    if kls in coauthor_classes:
+        i = 0
+
+        final1 = json.loads(final1)
+        for f in final1:
+            tmp = final1[i]['pk']
+            final1[i] = final1[i]['fields']
+            final1[i]['pk'] = tmp
+            i = i + 1
+
+
         handler(kls, final1)
 
     klass = eval(kls)
@@ -505,7 +508,17 @@ def post_data(request):
     result = klass.objects.filter(employee=e)
     final = serializers.serialize('json', result)
 
-    res['data'] = final1
+    i = 0
+
+    final = json.loads(final)
+    for f in final:
+        tmp = final[i]['pk']
+        final[i] = final[i]['fields']
+        final[i]['pk'] = tmp
+        i = i + 1
+
+
+    res['data'] = final
     return JsonResponse(res, safe=False)
 
 
