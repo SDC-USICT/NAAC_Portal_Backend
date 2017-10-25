@@ -8,7 +8,14 @@ from publication_details.models import *
 def handler(kls, data):
     klass = eval(kls)
 
+    copi_flag = False
+    if kls == 'Projects':
+        spec = 'Co Principle Investigator'
+        copi_flag = True
+    else:
+        spec = 'Co Author'
     for d in data:
+
         if d['coauthor']:
             for sd in d['coauthor'].split(';'):
                 if sd.split(':')[2] == '0':
@@ -19,8 +26,10 @@ def handler(kls, data):
                     if search.exists():
                         stremail = FRONTEND + '/#/approve?id=' + str(d['pk']) + '&title=' + \
                                    d['title'] +'&email=' + sd.split(':')[1] + '&type=' +  kls + \
-                        '&invitee=' + (e.name).replace(' ', '')
-                        mail = EmailMessage('NAAC Portal CoAuthor Verification Mail', stremail, to=[sd.split(':')[1]])
+                        '&invitee=' + (e.name).replace(' ', '') + '&copi=' + copi_flag
+
+
+                        mail = EmailMessage('NAAC Portal ' + spec +' Verification Mail', stremail, to=[sd.split(':')[1]])
                         try:
                             mail.send()
                         except Exception:
