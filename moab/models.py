@@ -9,8 +9,8 @@ class Membership(models.Model):
     title = models.CharField("Membership Type",max_length=100)
     academic_body = models.CharField("Academic Body Name",max_length=100)
     university_agency = models.CharField("University Agency",max_length=100)
-    start_year = models.TextField("Start Year", max_length="10", blank=True, null=True)
-    end_year = models.TextField("End Year", max_length="10", blank=True, null=True)
+    start_year = models.CharField("Start Year", max_length=4)
+    end_year = models.CharField("End Year", max_length=4)
 
 
     class Meta:

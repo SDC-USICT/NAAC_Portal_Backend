@@ -14,7 +14,7 @@ class Professional(models.Model):
     pursuing = models.CharField("Phd Pursuing",max_length=100)
     submitted = models.IntegerField("Phd Submitted")
     awarded = models.CharField("Phd Awarded",max_length=100)
-    year = models.IntegerField("Year",null=False, blank=False)
+    year = models.CharField("Year",max_length=4)
 
     class Meta:
         db_table = 'professional'

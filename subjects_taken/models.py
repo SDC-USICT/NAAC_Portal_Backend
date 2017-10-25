@@ -19,7 +19,7 @@ class Subject(models.Model):
 class SubjectsTaken(models.Model):
     employee = models.ForeignKey(to=Employee , verbose_name='Employee ID')
     subjects = models.ManyToManyField(to=Subject)
-    year = models.CharField(verbose_name = "Year",max_length=100)
+    year = models.CharField(verbose_name = "Year",max_length=4)
     school = models.CharField("School",max_length=100)
 
     class Meta:
