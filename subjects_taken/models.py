@@ -7,7 +7,6 @@ from employee.models import Employee
 class Subject(models.Model):
     name = models.CharField(verbose_name = "Subject Name",max_length=100)
     code = models.CharField(verbose_name = "Subject Code",max_length=100)
-    credit = models.IntegerField(verbose_name = "Credit")
 
     class Meta:
         db_table = 'subject'
@@ -15,7 +14,7 @@ class Subject(models.Model):
 
 class SubjectsTaken(models.Model):
     employee = models.ForeignKey(to=Employee , verbose_name='Employee ID')
-    subject = models.TextField(verbose_name="Subject Name", max_length=200)
+    title = models.TextField(verbose_name="Subject Name", max_length=200)
     year = models.CharField(verbose_name = "Year",max_length=4)
     school = models.CharField("School",max_length=100)
     sem = models.CharField("Semester", max_length=100)
