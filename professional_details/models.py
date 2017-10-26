@@ -12,7 +12,7 @@ class Professional(models.Model):
     qualification_after = models.CharField("Qualification Added",max_length=100)
     phds = models.IntegerField("Total Student")
     pursuing = models.CharField("Phd Pursuing",max_length=100)
-    submitted = models.IntegerField("Phd Submitted")
+    submitted = models.CharField("Phd Submitted", max_length=100)
     awarded = models.CharField("Phd Awarded",max_length=100)
     year = models.CharField("Year",max_length=4)
 

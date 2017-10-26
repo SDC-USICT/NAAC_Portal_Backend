@@ -44,6 +44,15 @@ def schools(request):
 
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
+def subs(request):
+    subjects = Subject.objects.all()
+    final = serializers.serialize('json', subjects)
+    print(final)
+    return JsonResponse(json.loads(final), safe=False)
+
+
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
 def columns(request):
     arr = []
     for m in django.apps.apps.get_models():

@@ -41,4 +41,5 @@ urlpatterns = [
     url(r'^api/delete', delete_data),
     url(r'^api/verify_coauthor', verify_coauthor),
     url(r'^api/subjectupload', subjectImageUpload),
+    url(r'^api/subs', subs),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
