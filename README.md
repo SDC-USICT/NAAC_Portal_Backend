@@ -1,5 +1,5 @@
 # NAAC_Portal
-Portal for GGSIPU NAAC Report
+Portal for GGSIPU Faculty Data Acquisition System Report
 
 ### Usage
 ```
