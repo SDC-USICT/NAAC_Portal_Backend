@@ -47,7 +47,6 @@ def schools(request):
 def subs(request):
     subjects = Subject.objects.all()
     final = serializers.serialize('json', subjects)
-    print(final)
     return JsonResponse(json.loads(final), safe=False)
 
 
@@ -443,13 +442,9 @@ def get_data(request):
 @require_http_methods(["POST"])
 def post_data(request):
     myfile = request.FILES.get('image')
-    print(request.FILES)
 
-    print(myfile)
     request = json.loads(request.body.decode('utf-8'))
-    print(request)
     data = request['data']
-    print(data)
     mdata = copy.deepcopy(data)
     kls = request['kls']
     klass = eval(kls)
