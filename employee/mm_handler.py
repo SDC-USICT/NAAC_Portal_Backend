@@ -3,6 +3,7 @@ from django.core.mail import EmailMessage
 
 from naac_portal.settings import FRONTEND
 from publication_details.models import *
+from project.models import *
 
 
 def handler(kls, data):
