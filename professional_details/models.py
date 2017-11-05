@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 
 # Create your models here.
@@ -8,13 +9,13 @@ class Professional(models.Model):
     employee = models.ForeignKey(to=Employee, verbose_name='Employee ID')
     title = models.IntegerField("Academic Experience")
     industrial_exp = models.IntegerField("Industrial Experience")
-    qualification_before = models.CharField("Highest Qualification",max_length=100)
-    qualification_after = models.CharField("Qualification Added",max_length=100)
+    qualification_highest = models.CharField("Highest Qualification",max_length=100)
+    qualification_year_completion = models.CharField("Year Of Completion of Highest Qualification",max_length=100)
     phds = models.IntegerField("Total Student")
     pursuing = models.CharField("Phd Pursuing",max_length=100)
     submitted = models.CharField("Phd Submitted", max_length=100)
     awarded = models.CharField("Phd Awarded",max_length=100)
-    year = models.CharField("Year",max_length=4)
+    year = models.CharField("Year",max_length=4, default=(datetime.datetime.now()).year)
 
     class Meta:
         db_table = 'professional'
