@@ -458,7 +458,8 @@ def post_data(request):
         'Book',
         'BookChapters',
         'JournalPapers',
-        'Conference'
+        'Conference',
+        'Projects'
     ]
 
     d = data[0]
