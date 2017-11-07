@@ -17,7 +17,6 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from employee.views import *
-from patents.views import patent
 from awards.views import award
 from django.conf import settings
 from django.conf.urls.static import static
