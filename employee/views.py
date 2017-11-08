@@ -10,6 +10,7 @@ from django.core.mail.backends import console
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.core.mail import EmailMessage
 
 from employee.mm_handler import handler
 from employee.models import Employee
@@ -729,3 +730,21 @@ class OverwriteStorage(FileSystemStorage):
 
     def get_available_name(self, name, max_length=None):
         return name
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def forgot_password(request):
+    password = Employee.objects.get(instructor_id=request.POST['loginid'])
+    pwd = "Password for Faculty Data Acquisition System : " + password.password
+    email = EmailMessage('Password For FDA System',pwd,to=[request.POST['email']])
+    try:
+        email.send()
+    except Exception as e:
+        res = {
+        'success': 'false',
+    }
+    else:
+        res = {
+        'success': 'true'
+    }
+    return JsonResponse(res, safe=False)
