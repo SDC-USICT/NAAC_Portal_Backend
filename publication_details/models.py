@@ -7,13 +7,14 @@ from employee.models import Employee
 class JournalPapers(models.Model):
     employee = models.ForeignKey(Employee, related_name='employee_jp', verbose_name='Employee ID')
     title = models.CharField("Title of Paper",max_length=100, blank=True, null=True)
-    name_and_publisher = models.CharField("Journal Name with Publisher",max_length=100)
+    name = models.CharField("Journal Name with Publisher",max_length=100)
+    publisher = models.CharField("Journal Name with Publisher",max_length=100)
     volume_no = models.CharField("Vol. No.",max_length=100)
     issn_isbn = models.IntegerField("ISSN No.")
     indexing = models.CharField("Indexing",max_length=100)
     month = models.CharField("Month",max_length=12)
-    hindex = models.CharField("H-Index of Journal using Scimago (if Scopus, SCI-Ex or SCI)", max_length=100, blank=True, null=True)
-    impact_factor = models.CharField("Impact Factor if SCI-Ex or SCI", max_length=100, blank=True, null=True)
+    hindex = models.IntegerField("H-Index of Journal using Scimago (if Scopus, SCI-Ex or SCI)")
+    impact_factor = models.IntegerField("Impact Factor if SCI-Ex or SCI")
     coauthor = models.TextField(max_length=200, verbose_name='Co Authors', blank=True,null=True)
 
     class Meta:

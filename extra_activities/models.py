@@ -8,8 +8,10 @@ class Extra(models.Model):
     employee = models.ForeignKey(to=Employee, verbose_name='Employee ID')
     title = models.CharField("Name",max_length=100)
     department = models.CharField("Department",max_length=100)
+    level = models.CharField("Level",max_length=100)
     details = models.CharField("Details",max_length=100)
     year = models.CharField("Year",max_length=4)
+    month = models.CharField("Month",max_length=10)
 
 
     class Meta:
