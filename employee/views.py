@@ -66,7 +66,8 @@ def columns(request):
         'ContentType',
         'Session',
         'Subject',
-        'CoAuthors'
+        'CoAuthors',
+        'DontFill'
     ]
 
     final = [item for item in arr if item not in extras]
