@@ -30,3 +30,23 @@ class Employee(models.Model):
 
     class Meta:
         db_table = 'employee'
+
+
+class DontFill(models.Model):
+    employee = models.ForeignKey(Employee, related_name='employee_fs', default=False)
+    awards = models.BooleanField("Awards", default=False)
+    extra_activities = models.BooleanField("Extra", default=False)
+    guest_lecturer = models.BooleanField("GuestLecturer", default=False)
+    moab = models.BooleanField("Membership", default=False)
+    patents = models.BooleanField("Patents", default=False)
+    professional_details = models.BooleanField("Professional", default=False)
+    project = models.BooleanField("Projects", default=False)
+    journal_papers = models.BooleanField("JournalPapers", default=False)
+    conference = models.BooleanField("Conference", default=False)
+    bookchapters = models.BooleanField("BookChapters", default=False)
+    book = models.BooleanField("Book", default=False)
+    subjects_taken = models.BooleanField("SubjectsTaken", default=False)
+    workshop = models.BooleanField("Workshop", default=False)
+
+    class Meta:
+        db_table = 'fill_status'
