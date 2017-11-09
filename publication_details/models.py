@@ -25,14 +25,14 @@ class Conference(models.Model):
     employee = models.ForeignKey(Employee, related_name='employee_conf', verbose_name='Employee ID')
     title = models.CharField("Title of Paper",max_length=100, blank=True, null=True)
     name_and_publisher = models.CharField('Name & Publisher', max_length=100)
-    issue_no = models.CharField('Issue no', max_length=100, null=True, blank=True)
+    issue_no = models.IntegerField('Issue no')
     issn_isbn = models.IntegerField("ISBN No.")
     indexing = models.CharField("Indexing",max_length=100)
     year = models.CharField("Year",max_length=4)
     international_national = models.CharField("International/National",max_length=100)
     coauthor = models.TextField(max_length=200, verbose_name='Co Authors',blank=True,null=True)
-    page_no_start = models.CharField('Page number starting', max_length=100, blank=True, null=True)
-    page_no_end =  models.CharField('Page number ending', max_length=100, blank=True, null=True)
+    page_no_start = models.IntegerField('Page number starting')
+    page_no_end =  models.IntegerField('Page number ending')
 
 
     class Meta:
@@ -61,8 +61,8 @@ class Book(models.Model):
     isbn = models.IntegerField('ISBN')
     year = models.CharField("Year",max_length=4)
     coauthor = models.TextField(max_length=200, verbose_name='Co Authors',blank=True,null=True)
-    page_no_start = models.CharField('Page number starting', max_length=100, blank=True, null=True)
-    page_no_end = models.CharField('Page number ending', max_length=100, blank=True, null=True)
+    page_no_start = models.IntegerField('Page number starting')
+    page_no_end = models.IntegerField('Page number ending')
 
 
 class Meta:
