@@ -729,17 +729,22 @@ class OverwriteStorage(FileSystemStorage):
 @csrf_exempt
 @require_http_methods(["POST"])
 def forgot_password(request):
-    password = Employee.objects.get(instructor_id=request.POST['loginid'])
-    pwd = "Password for Faculty Data Acquisition System : " + password.password
-    email = EmailMessage('Password For FDA System',pwd,to=[request.POST['email']])
+    request = json.loads(request.body.decode('utf-8'))
+    eMail = request["email"]
+    empId = request["loginid"]
+    emp = Employee.objects.filter(instructor_id=empId)
+    if eMail == "" or emp[0].email != eMail:
+        res = {"error":'true'}
+        return JsonResponse(res, safe=False)
+    pwd = "Password for Faculty Data Acquisition System : " + emp[0].password
+    email = EmailMessage('Password For FDA System',pwd,to=[eMail])
     try:
         email.send()
     except Exception as e:
         res = {
-        'success': 'false',
+        "error":'true'
     }
-    else:
-        res = {
+    res = {
         'success': 'true'
     }
     return JsonResponse(res, safe=False)
