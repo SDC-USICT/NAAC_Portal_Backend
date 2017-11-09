@@ -41,5 +41,6 @@ urlpatterns = [
     url(r'^api/verify_coauthor', verify_coauthor),
     url(r'^api/subjectupload', subjectImageUpload),
     url(r'^api/subs', subs),
-    url(r'^api/forgot', forgot_password)
+    url(r'^api/forgot', forgot_password),
+    url(r'^api/changePassword', changePassword)
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

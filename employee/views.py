@@ -748,3 +748,30 @@ def forgot_password(request):
         'success': 'true'
     }
     return JsonResponse(res, safe=False)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def changePassword(request):
+    request = json.loads(request.body.decode('utf-8'))
+    curpass = request["curpass"]
+    newpass = request["newpass"]
+    confpass = request["confpass"]
+    empId = request["loginid"]
+    if newpass == confpass:
+        emp = Employee.objects.get(instructor_id=empId)
+        if emp.password == curpass:
+            emp.password = newpass
+            emp.save()
+            res = {
+                "success":'true'
+            }
+        else:
+            res = {
+                "error":'true'
+            }
+    else:
+        res = {
+            "mod":'true'
+        }
+    return JsonResponse(res, safe=False)
+
