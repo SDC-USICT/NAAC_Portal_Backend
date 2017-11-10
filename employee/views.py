@@ -782,6 +782,7 @@ def changePassword(request):
 def getdontfill(request):
     request = json.loads(request.body.decode('utf-8'))
     empid = request['empid']
+    print(request)
     e = Employee.objects.get(instructor_id=empid)
     d = DontFill.objects.filter(employee=e)
     res = {}
@@ -802,11 +803,12 @@ def getdontfill(request):
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
 def set_dontfill(request):
+    print(request.body.decode('utf-8'))
     request = json.loads(request.body.decode('utf-8'))
     pk = request.pop('pk')
     e = Employee.objects.get(instructor_id=pk)
     DontFill.objects.filter(employee=pk).update(**request)
-
+    print(request)
     res = {
     'success' : 'True'
     }
