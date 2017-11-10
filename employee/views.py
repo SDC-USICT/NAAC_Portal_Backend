@@ -13,7 +13,7 @@ from django.views.decorators.http import require_http_methods
 from django.core.mail import EmailMessage
 
 from employee.mm_handler import handler
-from employee.models import Employee
+from employee.models import *
 from awards.models import Awards
 from extra_activities.models import Extra
 from guest_lecturer.models import GuestLecture
@@ -776,3 +776,39 @@ def changePassword(request):
         }
     return JsonResponse(res, safe=False)
 
+
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
+def getdontfill(request):
+    request = json.loads(request.body.decode('utf-8'))
+    empid = request['empid']
+    e = Employee.objects.get(instructor_id=empid)
+    d = DontFill.objects.filter(employee=e)
+    res = {}
+    if d.exists():
+        res = serializers.serialize('json', d)
+        res = (json.loads(res))[0]
+        print(res)
+        del res['model']
+        tmp = res['pk']
+        res = res['fields']
+        res['pk'] = tmp
+    else:
+        DontFill.objects.create(employee=e)
+
+    return JsonResponse(res, safe=False)
+
+
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
+def set_dontfill(request):
+    request = json.loads(request.body.decode('utf-8'))
+    pk = request.pop('pk')
+    e = Employee.objects.get(instructor_id=pk)
+    DontFill.objects.filter(employee=pk).update(**request)
+
+    res = {
+    'success' : 'True'
+    }
+
+    return JsonResponse(res, safe=False)
