@@ -33,7 +33,7 @@ class Employee(models.Model):
 
 
 class DontFill(models.Model):
-    employee = models.ForeignKey(Employee, related_name='employee_fs', default=False)
+    employee = models.ForeignKey(Employee, related_name='employee_fs', primary_key=True)
     awards = models.BooleanField("Awards", default=False)
     extra_activities = models.BooleanField("Extra", default=False)
     guest_lecturer = models.BooleanField("GuestLecturer", default=False)

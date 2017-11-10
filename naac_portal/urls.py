@@ -42,5 +42,7 @@ urlpatterns = [
     url(r'^api/subjectupload', subjectImageUpload),
     url(r'^api/subs', subs),
     url(r'^api/forgot', forgot_password),
-    url(r'^api/changePassword', changePassword)
+    url(r'^api/changePassword', changePassword),
+    url(r'^api/set_dontfill', set_dontfill),
+    url(r'^api/dontfill', getdontfill),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
