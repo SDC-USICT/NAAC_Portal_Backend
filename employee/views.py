@@ -610,7 +610,7 @@ def update_emp_details(request):
 def school_details(request):
     request = json.loads(request.body.decode('utf-8'))
     school = request['school']
-    e = Employee.objects.filter(school=school)
+    e = Employee.objects.all()
     res = serializers.serialize('json', e)
     return JsonResponse(json.loads(res), safe=False)
 
