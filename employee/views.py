@@ -619,14 +619,21 @@ def school_details(request):
 def imageUpload(request):
     if request.method == 'POST':
         myfile = request.FILES['image']
-        n = request.POST['name']
-        fs = OverwriteStorage(location=BASE_DIR + os.sep + 'static' + os.sep + 'images')
-        filename = fs.save(n + '.jpg', myfile)
-        uploaded_file_url = fs.url(filename)
-        res = {
-            'success': 'true',
-            'url': '/static' + uploaded_file_url
-        }
+        if image_clean(myfile):
+            print(image_clean(myfile))
+            n = request.POST['name']
+            fs = OverwriteStorage(location=BASE_DIR + os.sep + 'static' + os.sep + 'images')
+            filename = fs.save(n + '.jpg', myfile)
+            uploaded_file_url = fs.url(filename)
+            res = {
+                'success': 'true',
+                'url': '/static' + uploaded_file_url
+            }
+        else:
+            print(image_clean(myfile))
+            res = {
+                'success': 'false'
+            }
     else:
         res = {
             'success': 'false'
@@ -813,3 +820,8 @@ def set_dontfill(request):
     }
 
     return JsonResponse(res, safe=False)
+
+def image_clean(image):
+    if image.content_type==('image/jpeg' or 'image/png') and image.size<1000000:
+        return True
+    return False
