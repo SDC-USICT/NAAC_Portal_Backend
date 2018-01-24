@@ -2,8 +2,12 @@ import copy
 import json
 import os
 import urllib
+<<<<<<< HEAD
 import traceback
 import certifi
+=======
+
+>>>>>>> 0c8d007... Patch: Captcha
 import django
 import magic
 
@@ -962,10 +966,17 @@ def image_clean(image):
     return False
 
 
+<<<<<<< HEAD
 @api_view(['POST'])
 @permission_classes((permissions.AllowAny,))
 def captcha_validator(req, format=None):
     request = json.loads(req.body.decode('utf-8'))
+=======
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
+def captcha_validator(request):
+    request = json.loads(request.body.decode('utf-8'))
+>>>>>>> 0c8d007... Patch: Captcha
     recaptcha_response = request.pop('captcha')
     url = 'https://www.google.com/recaptcha/api/siteverify'
     values = {
@@ -974,12 +985,19 @@ def captcha_validator(req, format=None):
     }
     data = urllib.parse.urlencode(values).encode()
     req = urllib.request.Request(url, data=data)
+<<<<<<< HEAD
     response = urllib.request.urlopen(req,  cafile=certifi.where())
     result = json.loads(response.read().decode())
+=======
+    response = urllib.request.urlopen(req)
+    result = json.loads(response.read().decode())
+    print (result)
+>>>>>>> 0c8d007... Patch: Captcha
     if result['success']:
         return JsonResponse({}, status=200, safe=False)
 
     else:
+<<<<<<< HEAD
         return JsonResponse({}, status=401, safe=False)
 
 
@@ -1058,3 +1076,6 @@ def logout(request):
             'error': 'true'
         }
     return JsonResponse(res,safe=False)
+=======
+        return JsonResponse({}, status=401, safe=False)
+>>>>>>> 0c8d007... Patch: Captcha
