@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'a26^c#&+9l(zkj!ks+a*=l9dgg%6@lfn=j4n^=#^0!zaqnuv%r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -168,3 +168,6 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PWD', 'deployment!bliss')
 EMAIL_PORT = 587
 
 FRONTEND = os.environ.get('FRONTEND_URL', 'https://sdc-usict.github.io/NAAC')
+
+
+GOOGLE_RECAPTCHA_SECRET_KEY='6LchXkIUAAAAAE9iYIpMSBZ9Cx-jl8v5Abc7FOp4'
