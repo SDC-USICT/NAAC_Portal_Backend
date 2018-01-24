@@ -1,6 +1,7 @@
 import copy
 import json
 import os
+import urllib
 
 import django
 from django.core import serializers
@@ -18,6 +19,7 @@ from awards.models import Awards
 from extra_activities.models import Extra
 from guest_lecturer.models import GuestLecture
 from moab.models import Membership
+from naac_portal import settings
 from naac_portal.settings import BASE_DIR
 from patents.models import *
 from professional_details.models import *
@@ -825,3 +827,25 @@ def image_clean(image):
     if image.content_type==('image/jpeg' or 'image/png') and image.size<1000000:
         return True
     return False
+
+
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
+def captcha_validator(request):
+    request = json.loads(request.body.decode('utf-8'))
+    recaptcha_response = request.pop('captcha')
+    url = 'https://www.google.com/recaptcha/api/siteverify'
+    values = {
+        'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+        'response': recaptcha_response
+    }
+    data = urllib.parse.urlencode(values).encode()
+    req = urllib.request.Request(url, data=data)
+    response = urllib.request.urlopen(req)
+    result = json.loads(response.read().decode())
+    print (result)
+    if result['success']:
+        return JsonResponse({}, status=200, safe=False)
+
+    else:
+        return JsonResponse({}, status=401, safe=False)

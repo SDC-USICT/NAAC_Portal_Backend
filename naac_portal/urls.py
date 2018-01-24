@@ -45,4 +45,5 @@ urlpatterns = [
     url(r'^api/changePassword', changePassword),
     url(r'^api/set_dontfill', set_dontfill),
     url(r'^api/dontfill', getdontfill),
+    url(r'^api/captcha', captcha_validator),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
