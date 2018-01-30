@@ -32,8 +32,8 @@ from workshop.models import *  # add rebase--continue
 # TODO: ADD VALIDATOR FOR CHECKING IF kls FROM FRONTEND
 # TODO: IS A PART OF ALREADY EXISTENT MODELS IN BACKEND
 
-@csrf_exempt
-@require_http_methods(["GET", "POST"])
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def schools(request):
     schools = [
         'usict',
@@ -45,16 +45,16 @@ def schools(request):
     return JsonResponse(schools, safe=False)
 
 
-@csrf_exempt
-@require_http_methods(["GET", "POST"])
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def subs(request):
     subjects = Subject.objects.all()
     final = serializers.serialize('json', subjects)
     return JsonResponse(json.loads(final), safe=False)
 
 
-@csrf_exempt
-@require_http_methods(["GET", "POST"])
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def columns(request):
     arr = []
     for m in django.apps.apps.get_models():
@@ -94,8 +94,8 @@ def columns(request):
     return JsonResponse(res, safe=False)
 
 
-@csrf_exempt
-@require_http_methods(["GET", "POST"])
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def login(request):
     request = json.loads(request.body.decode('utf-8'))
     username = request['empid']
@@ -119,8 +119,8 @@ def login(request):
     return JsonResponse(res, safe=False)
 
 
-@csrf_exempt
-@require_http_methods(["GET", "POST"])
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def awards(request):
     request = json.loads(request.body.decode('utf-8'))
     username = request['empid']
@@ -143,8 +143,8 @@ def awards(request):
     return JsonResponse(res, safe=False)
 
 
-@csrf_exempt
-@require_http_methods(["GET", "POST"])
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def employee(request):
     request = json.loads(request.body.decode('utf-8'))
     username = request['empid']
@@ -172,8 +172,8 @@ def employee(request):
     return JsonResponse(res, safe=False)
 
 
-@csrf_exempt
-@require_http_methods(["GET", "POST"])
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def extra(request):
     request = json.loads(request.body.decode('utf-8'))
     username = request['empid']
@@ -196,8 +196,8 @@ def extra(request):
     return JsonResponse(res, safe=False)
 
 
-@csrf_exempt
-@require_http_methods(["GET", "POST"])
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def guest(request):
     request = json.loads(request.body.decode('utf-8'))
     username = request['empid']
@@ -220,8 +220,8 @@ def guest(request):
     return JsonResponse(res, safe=False)
 
 
-@csrf_exempt
-@require_http_methods(["GET", "POST"])
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def moab(request):
     request = json.loads(request.body.decode('utf-8'))
     username = request['empid']
@@ -785,8 +785,8 @@ def changePassword(request):
     return JsonResponse(res, safe=False)
 
 
-@csrf_exempt
-@require_http_methods(["GET", "POST"])
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def getdontfill(request):
     request = json.loads(request.body.decode('utf-8'))
     empid = request['empid']
@@ -808,8 +808,8 @@ def getdontfill(request):
     return JsonResponse(res, safe=False)
 
 
-@csrf_exempt
-@require_http_methods(["GET", "POST"])
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def set_dontfill(request):
     print(request.body.decode('utf-8'))
     request = json.loads(request.body.decode('utf-8'))
@@ -829,8 +829,8 @@ def image_clean(image):
     return False
 
 
-@csrf_exempt
-@require_http_methods(["GET", "POST"])
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def captcha_validator(request):
     request = json.loads(request.body.decode('utf-8'))
     recaptcha_response = request.pop('captcha')

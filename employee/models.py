@@ -3,9 +3,38 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 # Create your models here.
+class employeeManager(BaseUserManager):
+    use_in_migrations = True
 
+    def _create_user(self, email, password=None, **extra_fields):
+        """
+        Creates and saves a User with the given email and password.
+        """
+        if not email:
+            raise ValueError('The given email must be set')
+        if not password:
+            raise ValueError('The password must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
-class Employee(models.Model):
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_allowed', True)
+
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(email, password, **extra_fields)
+
+class Employee(AbstractBaseUser, PermissionsMixin):#models.Model ki jagah naye args
     instructor_id = models.CharField(max_length=10, primary_key=True, verbose_name='Employee ID')
     name = models.CharField("Name", max_length=200)
     email = models.EmailField("Email",max_length=200)
@@ -15,6 +44,15 @@ class Employee(models.Model):
     designation = models.CharField("Designation", max_length=100)
     room_no = models.CharField("Room No", max_length=10)
     school = models.CharField("School", max_length=10)
+    #new argument
+    is_active = models.BooleanField(default=True)
+    is_allowed = models.BooleanField(default=False, blank=True)
+    is_staff = models.BooleanField(default=False)
+    REQUIRED_FIELDS = ['password']
+    USERNAME_FIELD = 'email'#ye rhta h yaha instructor_id aayega??
+    EMAIL_FIELD='email'
+
+    objects = employeeManager()
 
     def as_json(self):
         return dict(
