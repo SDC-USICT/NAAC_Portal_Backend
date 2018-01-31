@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'a26^c#&+9l(zkj!ks+a*=l9dgg%6@lfn=j4n^=#^0!zaqnuv%r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'employee',
     'awards.apps.AwardsConfig',
     'extra_activities',
@@ -48,7 +49,7 @@ INSTALLED_APPS = [
     'project',
     'publication_details',
     'subjects_taken',
-    'workshop'
+    'workshop',
 ]
 
 MIDDLEWARE = [
@@ -156,7 +157,13 @@ STATICFILES_DIRS = (BASE_DIR + '/static/',)
 STATIC_URL =  '/static/'
 STATIC_ROOT = ''
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = [
+    'localhost:8050',
+    'localhost:8080',
+    'localhost',
+    'https://sdc-usict.github.io/NAAC',
+    'https://sdc-usict.github.io/NAAC_Portal_Frontend'
+]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, '/images')
 MEDIA_URL = '/images/'
@@ -171,3 +178,21 @@ FRONTEND = os.environ.get('FRONTEND_URL', 'https://sdc-usict.github.io/NAAC')
 
 
 GOOGLE_RECAPTCHA_SECRET_KEY='6LchXkIUAAAAAE9iYIpMSBZ9Cx-jl8v5Abc7FOp4'
+AUTH_USER_MODEL = 'employee.Employee'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=3000),
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=3000),
+}
