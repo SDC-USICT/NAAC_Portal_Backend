@@ -2,7 +2,7 @@ import copy
 import json
 import os
 import urllib
-
+import traceback
 import certifi
 import django
 from django.core import serializers
@@ -13,6 +13,16 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.mail import EmailMessage
+
+
+from rest_framework import permissions
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import authentication_classes, permission_classes, api_view
+from rest_framework.parsers import JSONParser
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework_jwt.settings import api_settings
 
 from employee.mm_handler import handler
 from employee.models import *
@@ -27,35 +37,20 @@ from professional_details.models import *
 from project.models import *
 from publication_details.models import *
 from subjects_taken.models import *
-from workshop.models import *  # add rebase--continue
-
-
-# TODO: ADD VALIDATOR FOR CHECKING IF kls FROM FRONTEND
-# TODO: IS A PART OF ALREADY EXISTENT MODELS IN BACKEND
-
-@api_view(['POST'])
-@authentication_classes((JSONWebTokenAuthentication,))
-def schools(request):
-    schools = [
-        'usict',
-        'uslls',
-        'usct',
-        'usbt'
-    ]
-
-    return JsonResponse(schools, safe=False)
+from workshop.models import * 
+from employee.serializer import EmployeeSerializer
 
 
 @api_view(['POST'])
-@authentication_classes((JSONWebTokenAuthentication,))
+@permission_classes((permissions.AllowAny,))
 def subs(request):
     subjects = Subject.objects.all()
     final = serializers.serialize('json', subjects)
     return JsonResponse(json.loads(final), safe=False)
 
 
-@api_view(['POST'])
-@authentication_classes((JSONWebTokenAuthentication,))
+@api_view(['GET','POST'])
+@permission_classes((permissions.AllowAny,))
 def columns(request):
     arr = []
     for m in django.apps.apps.get_models():
@@ -96,7 +91,7 @@ def columns(request):
 
 
 @api_view(['POST'])
-@authentication_classes((JSONWebTokenAuthentication,))
+@permission_classes((permissions.AllowAny,))
 def login(request):
     request = json.loads(request.body.decode('utf-8'))
     username = request['empid']
@@ -105,14 +100,23 @@ def login(request):
     try:
         a = Employee.objects.filter(instructor_id=username, password=password)
         if a.exists():
+            a = a[0]
+            serializer = EmployeeSerializer(a)
+            token = generate_jwt_token(serializer.data)
             res = {
-                'success': 'true',
+                'user': serializer.data,
+                'token': token
             }
+            return JsonResponse(res, status=201)
+
+         
         else:
             res = {
                 'error': 'true'
             }
     except Exception:
+        tc = traceback.format_exc()
+        print (str(tc))
         res = {
             'error': 'true'
         }
@@ -831,9 +835,9 @@ def image_clean(image):
 
 
 @api_view(['POST'])
-@authentication_classes((JSONWebTokenAuthentication,))
-def captcha_validator(request):
-    request = json.loads(request.body.decode('utf-8'))
+@permission_classes((permissions.AllowAny,))
+def captcha_validator(req, format=None):
+    request = json.loads(req.body.decode('utf-8'))
     recaptcha_response = request.pop('captcha')
     url = 'https://www.google.com/recaptcha/api/siteverify'
     values = {
@@ -850,3 +854,12 @@ def captcha_validator(request):
 
     else:
         return JsonResponse({}, status=401, safe=False)
+
+
+def generate_jwt_token(user):
+    user_object = Employee.objects.get(pk=user['instructor_id'])
+    jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+    jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+    payload = jwt_payload_handler(user_object)
+    token = jwt_encode_handler(payload)
+    return token
