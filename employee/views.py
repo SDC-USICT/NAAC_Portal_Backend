@@ -3,6 +3,7 @@ import json
 import os
 import urllib
 
+import certifi
 import django
 from django.core import serializers
 from django.core.exceptions import FieldError
@@ -841,7 +842,7 @@ def captcha_validator(request):
     }
     data = urllib.parse.urlencode(values).encode()
     req = urllib.request.Request(url, data=data)
-    response = urllib.request.urlopen(req)
+    response = urllib.request.urlopen(req,  cafile=certifi.where())
     result = json.loads(response.read().decode())
     print (result)
     if result['success']:
