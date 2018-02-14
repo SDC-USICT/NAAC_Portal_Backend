@@ -623,7 +623,7 @@ def update_emp_details(request):
     school = request['school']
 
     try:
-        a, created = Employee.objects.update_or_create(instructor_id=username, defaults ={'name' : name, 'email' : email, 'phone' : phone,'designation' : designation, 'date_of_joining' : date_join, 'room_no' : romm,'school': school })
+        a, created = Employee.objects.update_or_create(instructor_id=username, defaults ={'name':name, 'email' : email, 'phone' : phone,'designation' : designation, 'date_of_joining' : date_join, 'room_no' : romm,'school':school })
         res = EmployeeSerializer(a)
         return JsonResponse((res.data), safe=False, status=200)
     except Exception:
