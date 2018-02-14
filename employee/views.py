@@ -37,7 +37,7 @@ from professional_details.models import *
 from project.models import *
 from publication_details.models import *
 from subjects_taken.models import *
-from workshop.models import * 
+from workshop.models import *
 from employee.serializer import EmployeeSerializer
 
 
@@ -98,18 +98,26 @@ def login(request):
     password = request['password']
 
     try:
-        a = Employee.objects.filter(instructor_id=username, password=password)
+        a = Employee.objects.filter(instructor_id=username)
         if a.exists():
-            a = a[0]
-            serializer = EmployeeSerializer(a)
-            token = generate_jwt_token(serializer.data)
-            res = {
-                'user': serializer.data,
-                'token': token
-            }
-            return JsonResponse(res, status=201)
+            import hashlib
 
-         
+            if hashlib.md5(a[0].password.encode('utf-8')).hexdigest() == password:
+                a = a[0]
+                serializer = EmployeeSerializer(a)
+                token = generate_jwt_token(serializer.data)
+                res = {
+                    'user': serializer.data,
+                    'token': token
+                }
+                return JsonResponse(res, status=201)
+            else:
+                res = {
+                    'error' : 'Password did not match!'
+                }
+                return JsonResponse(res, status=401)
+
+
         else:
             res = {
                 'error': 'true'
@@ -414,8 +422,8 @@ def subjectTaken(request):
     return JsonResponse(res, safe=False)
 
 
-@csrf_exempt
-@require_http_methods(["POST"])
+@api_view(['POST', 'GET'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def get_data(request):
     request = json.loads(request.body.decode('utf-8'))
 
@@ -589,31 +597,47 @@ def delete_data(request):
     return JsonResponse(res, safe=False)
 
 
-@csrf_exempt
-@require_http_methods(["POST"])
+@api_view(['POST', 'GET'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def employee_details(request):
     request = json.loads(request.body.decode('utf-8'))
 
     empid = request['empid']
     e = Employee.objects.get(instructor_id=empid)
-    res = serializers.serialize('json', [e])
-    return JsonResponse(json.loads(res), safe=False)
+    res = EmployeeSerializer(e)
+    return JsonResponse((res.data), safe=False)
 
 
 @csrf_exempt
 @require_http_methods(["POST"])
 def update_emp_details(request):
     request = json.loads(request.body.decode('utf-8'))
-    data = request['data']
-    pk = data.pop('pk')
-    Employee.objects.filter(instructor_id=pk).update(**data)
-    e = Employee.objects.get(instructor_id=pk)
-    res = serializers.serialize('json', [e])
-    return JsonResponse(json.loads(res), safe=False)
+    request = request['data']
+    username = request['instructor_id']
+    name = request['name']
+    email = request['email']
+    phone = request['phone']
+    designation = request['designation']
+    date_join = request['date_of_joining']
+    romm = request['room_no']
+    school = request['school']
+
+    try:
+        a, created = Employee.objects.update_or_create(instructor_id=username, defaults ={'name' : name, 'email' : email, 'phone' : phone,'designation' : designation, 'date_of_joining' : date_join, 'room_no' : romm,'school': school })
+        res = EmployeeSerializer(a)
+        return JsonResponse((res.data), safe=False, status=200)
+    except Exception:
+        tc = traceback.format_exc()
+        print (tc)
+        res = {
+            'error': 'true',
+            'trace': str(tc)
+        }
+        return JsonResponse(res, safe=False, status=500)
 
 
-@csrf_exempt
-@require_http_methods(["POST"])
+@api_view(['POST', 'GET'])
+@permission_classes((permissions.AllowAny,))
 def school_details(request):
     request = json.loads(request.body.decode('utf-8'))
     e = Employee.objects.all()
@@ -763,6 +787,7 @@ def forgot_password(request):
     }
     return JsonResponse(res, safe=False)
 
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def changePassword(request):
@@ -772,9 +797,12 @@ def changePassword(request):
     confpass = request["confpass"]
     empId = request["loginid"]
     if newpass == confpass:
+        import hashlib
         emp = Employee.objects.get(instructor_id=empId)
-        if emp.password == curpass:
-            emp.password = newpass
+        if hashlib.md5(emp.password.encode('utf-8')).hexdigest() == curpass :
+            import base64
+            print (base64.b64decode(newpass))
+            emp.password = base64.b64decode(newpass)
             emp.save()
             res = {
                 "success":'true'
@@ -790,7 +818,7 @@ def changePassword(request):
     return JsonResponse(res, safe=False)
 
 
-@api_view(['POST'])
+@api_view(['POST', 'GET'])
 @authentication_classes((JSONWebTokenAuthentication,))
 def getdontfill(request):
     request = json.loads(request.body.decode('utf-8'))
