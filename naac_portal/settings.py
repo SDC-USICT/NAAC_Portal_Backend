@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'a26^c#&+9l(zkj!ks+a*=l9dgg%6@lfn=j4n^=#^0!zaqnuv%r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -153,17 +154,15 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-STATICFILES_DIRS = (BASE_DIR + '/static/',)
+STATICFILES_DIRS = (
+  os.path.join(BASE_DIR, 'static/'),
+)
+STATIC_ROOT = os.path.join(BASE_DIR, 'naac_portal', 'staticfiles')
 STATIC_URL =  '/static/'
-STATIC_ROOT = ''
 
-CORS_ORIGIN_WHITELIST = [
-    'localhost:8050',
-    'localhost:8080',
-    'localhost',
-    'https://sdc-usict.github.io/NAAC',
-    'https://sdc-usict.github.io/NAAC_Portal_Frontend'
-]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 MEDIA_ROOT = os.path.join(BASE_DIR, '/images')
 MEDIA_URL = '/images/'
