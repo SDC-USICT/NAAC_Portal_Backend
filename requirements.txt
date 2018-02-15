@@ -4,3 +4,4 @@ django-cors-headers== 2.1.0
 certifi
 djangorestframework-jwt
 djangorestframework
+whitenoise
