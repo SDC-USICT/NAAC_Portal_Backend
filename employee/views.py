@@ -299,11 +299,13 @@ def workshop(request):
     date_id = request['date']
     duration_id = request['duration']
     organization_id = request['organization']
+    role = request['role']
+    details = request['detailsworkshop']
 
     try:
         a, created = Workshop.objects.update_or_create(instructor_id=empid_id, name=name_id,
                                                        date=date_id, duration=duration_id,
-                                                       organisation=organization_id)
+                                                       organisation=organization_id,role=role,detailsworkshop=details)
         a.save()
         res = {
             'success': 'true',
