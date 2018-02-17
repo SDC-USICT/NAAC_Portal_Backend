@@ -11,6 +11,6 @@ class Workshop(models.Model):
     date = models.TextField(verbose_name = "Date", blank=True, null=True)
     duration = models.CharField(verbose_name = "Duration(in days)",max_length=100)
     organization = models.CharField(verbose_name = "Organization",max_length=100)
-
+    detailsworkshop = models.CharField(max_length=100,blank=True,null=True)
     class Meta:
         db_table = 'workshop'
