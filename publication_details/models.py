@@ -13,9 +13,15 @@ class JournalPapers(models.Model):
     issn_isbn = models.IntegerField("ISSN No.")
     indexing = models.CharField("Indexing",max_length=100)
     month = models.CharField("Month",max_length=12)
-    hindex = models.IntegerField("H-Index of Journal using Scimago (if Scopus, SCI-Ex or SCI)")
-    impact_factor = models.IntegerField("Impact Factor if SCI-Ex or SCI")
+    hindex = models.IntegerField("H-Index of Journal using Scimago (if Scopus, SCI-Ex or SCI)",blank=True,null=True)
+    impact_factor = models.IntegerField("Impact Factor if SCI-Ex or SCI",blank=True,null=True)
     coauthor = models.TextField(max_length=200, verbose_name='Co Authors', blank=True,null=True)
+    ugcCheck = models.BooleanField(default=False)
+    year = models.IntegerField("Year",blank=True, null=True)
+    page_no_start = models.IntegerField('Page number starting',blank=True, null=True)
+    page_no_end =  models.IntegerField('Page number ending',blank=True, null=True)
+    citation = models.IntegerField(blank=True, null=True)
+    numcitations = models.IntegerField(blank=True, null=True)
 
     class Meta:
         db_table = 'journal_papers'
@@ -33,6 +39,9 @@ class Conference(models.Model):
     coauthor = models.TextField(max_length=200, verbose_name='Co Authors',blank=True,null=True)
     page_no_start = models.IntegerField('Page number starting')
     page_no_end =  models.IntegerField('Page number ending')
+    month = models.CharField("Month",max_length=12,blank=True, null=True)
+    role = models.CharField("Role",max_length=30,blank=True, null=True)
+    Institutional_Affiliation = models.CharField("Institutional Affiliation As Mentioned",blank=True,null=True,max_length=100)
 
 
     class Meta:

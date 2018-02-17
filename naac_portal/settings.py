@@ -24,7 +24,7 @@ PROJECT_NAME = 'naac_portal'
 SECRET_KEY = 'a26^c#&+9l(zkj!ks+a*=l9dgg%6@lfn=j4n^=#^0!zaqnuv%r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -88,28 +88,28 @@ WSGI_APPLICATION = 'naac_portal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-try:
-    import pymysql
-    pymysql.install_as_MySQLdb()
-except:
-    pass
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'sqlite.db',
-    }
-}
+# try:
+#     import pymysql
+#     pymysql.install_as_MySQLdb()
+# except:
+#     pass
+#
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'naac_portal',
-#         'USER': 'root',
-#         'PASSWORD': '',
-#         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-#         'PORT': '3306',
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'sqlite.db',
 #     }
 # }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'naac_portal',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'PORT': '3306',
+    }
+}
 
 
 
