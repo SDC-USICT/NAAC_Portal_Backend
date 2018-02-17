@@ -24,7 +24,7 @@ PROJECT_NAME = 'naac_portal'
 SECRET_KEY = 'a26^c#&+9l(zkj!ks+a*=l9dgg%6@lfn=j4n^=#^0!zaqnuv%r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
