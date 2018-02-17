@@ -97,15 +97,11 @@ def login(request):
     request = json.loads(request.body.decode('utf-8'))
     username = request['empid']
     password = request['password']
-    print("pss")
-    print(password)
+
     try:
         a = Employee.objects.filter(instructor_id=username)
         if a.exists():
             import hashlib
-            print("hash pass")
-            print(hashlib.md5(a[0].password.encode('utf-8')).hexdigest())
-            print(hashlib.md5(a[0].password.encode('utf-8')).hexdigest() == password)
             if hashlib.md5(a[0].password.encode('utf-8')).hexdigest() == password:
                 a = a[0]
                 serializer = EmployeeSerializer(a)
@@ -477,8 +473,6 @@ def post_data(request):
     ]
 
     d = data[0]
-    print("Data of jp")
-    print(d)
 
     if kls == 'SubjectsTaken' :
         try:
