@@ -101,7 +101,8 @@ def login(request):
         a = Employee.objects.filter(instructor_id=username)
         if a.exists():
             import hashlib
-
+            print ((str(a[0].password) + str(a[0].salt)).encode('utf-8'))
+            print (request)
             if hashlib.md5( (str(a[0].password) + str(a[0].salt)).encode('utf-8') ).hexdigest() == password:
                 a = a[0]
                 serializer = EmployeeSerializer(a)
@@ -896,17 +897,13 @@ def get_dh_key(req, format=None):
         user_id = request.pop('empid')
 
         sb = 5
-
-        from random import randint
-        secret = 13
+        secret = 2
 
         server_key =  ( int(client_key) ** secret ) % int(user_id)
-
         e = Employee.objects.get(instructor_id=user_id)
         e.salt = server_key
         e.save()
         dhkey_client = (int(sb) ** secret) % int(user_id)
-
         res = {
         'dh_key' : dhkey_client
         }
