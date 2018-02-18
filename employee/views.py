@@ -46,7 +46,6 @@ from employee.serializer import EmployeeSerializer
 def subs(request):
     subjects = Subject.objects.all()
     final = serializers.serialize('json', subjects)
-    print(final)
     return JsonResponse(json.loads(final), safe=False)
 
 
@@ -102,7 +101,8 @@ def login(request):
         a = Employee.objects.filter(instructor_id=username)
         if a.exists():
             import hashlib
-            if hashlib.md5(a[0].password.encode('utf-8')).hexdigest() == password:
+
+            if hashlib.md5( (str(a[0].password) + str(a[0].salt)).encode('utf-8') ).hexdigest() == password:
                 a = a[0]
                 serializer = EmployeeSerializer(a)
                 token = generate_jwt_token(serializer.data)
@@ -110,6 +110,9 @@ def login(request):
                     'user': serializer.data,
                     'token': token
                 }
+                e = Employee.objects.get(instructor_id=username)
+                e.salt = None
+                e.save()
                 return JsonResponse(res, status=201)
             else:
                 res = {
@@ -882,6 +885,41 @@ def captcha_validator(req, format=None):
 
     else:
         return JsonResponse({}, status=401, safe=False)
+
+
+@api_view(['POST', 'GET'])
+@permission_classes((permissions.AllowAny,))
+def get_dh_key(req, format=None):
+    request = json.loads(req.body.decode('utf-8'))
+    try:
+        client_key = request.pop('dh')
+        user_id = request.pop('empid')
+
+        sb = 5
+
+        from random import randint
+        secret = 13
+
+        server_key =  ( int(client_key) ** secret ) % int(user_id)
+
+        e = Employee.objects.get(instructor_id=user_id)
+        e.salt = server_key
+        e.save()
+        dhkey_client = (int(sb) ** secret) % int(user_id)
+
+        res = {
+        'dh_key' : dhkey_client
+        }
+
+        e = Employee.objects.get(instructor_id = user_id)
+        return JsonResponse(res, safe=False, status=200)
+    except:
+        tc = traceback.format_exc()
+        print (str(tc))
+        res = {
+        'dh_key' : 'Error!'
+        }
+        return JsonResponse(res, safe=False, status=500)
 
 
 def generate_jwt_token(user):

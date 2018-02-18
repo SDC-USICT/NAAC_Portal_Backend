@@ -50,6 +50,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     designation = models.CharField("Designation", max_length=100)
     room_no = models.CharField("Room No", max_length=10)
     school = models.CharField("School", max_length=10)
+    salt = models.TextField(blank=True, null=True)
 
     #new argument
     is_active = models.BooleanField(default=True)
