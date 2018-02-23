@@ -5,3 +5,4 @@ certifi
 djangorestframework-jwt
 djangorestframework
 whitenoise
+python-magic

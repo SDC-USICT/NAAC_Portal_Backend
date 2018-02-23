@@ -5,6 +5,8 @@ import urllib
 import traceback
 import certifi
 import django
+import magic
+
 from django.core import serializers
 from django.core.exceptions import FieldError
 from django.core.files.storage import FileSystemStorage
@@ -96,14 +98,14 @@ def login(request):
     request = json.loads(request.body.decode('utf-8'))
     username = request['empid']
     password = request['password']
-
+    ck = request['ck']
     try:
         a = Employee.objects.filter(instructor_id=username)
         if a.exists():
             import hashlib
             print ((str(a[0].password) + str(a[0].salt)).encode('utf-8'))
             print (request)
-            if hashlib.md5( (str(a[0].password) + str(a[0].salt)).encode('utf-8') ).hexdigest() == password:
+            if hashlib.md5( ( str(a[0].salt) + str(a[0].password) + str(ck)  ).encode('utf-8') ).hexdigest() == password:
                 a = a[0]
                 serializer = EmployeeSerializer(a)
                 token = generate_jwt_token(serializer.data)
@@ -860,9 +862,17 @@ def set_dontfill(request):
 
     return JsonResponse(res, safe=False)
 
+
+def check_in_memory_mime(in_memory_file):
+    mime = magic.from_buffer(in_memory_file.read(), mime=True)
+    return mime
+
+
 def image_clean(image):
     if image.content_type==('image/jpeg' or 'image/png') and image.size<1000000:
-        return True
+        res = check_in_memory_mime(image)
+        if res == ('image/jpeg' or 'image/png'):
+            return True
     return False
 
 
@@ -893,20 +903,21 @@ def captcha_validator(req, format=None):
 def get_dh_key(req, format=None):
     request = json.loads(req.body.decode('utf-8'))
     try:
-        client_key = request.pop('dh')
         user_id = request.pop('empid')
 
         sb = 5
         secret = 2
 
-        server_key =  ( int(client_key) ** secret ) % int(user_id)
+        server_key =  randomword(5)
         e = Employee.objects.get(instructor_id=user_id)
         e.salt = server_key
         e.save()
         dhkey_client = (int(sb) ** secret) % int(user_id)
         res = {
-        'dh_key' : dhkey_client
+        'dh_key' : server_key
         }
+
+        print (res)
 
         e = Employee.objects.get(instructor_id = user_id)
         return JsonResponse(res, safe=False, status=200)
@@ -914,10 +925,16 @@ def get_dh_key(req, format=None):
         tc = traceback.format_exc()
         print (str(tc))
         res = {
-        'dh_key' : 'Error!'
+        'dh_key' : str(tc)
         }
         return JsonResponse(res, safe=False, status=500)
 
+
+
+def randomword(length):
+    import random
+    import string
+    return ''.join(random.choice(string.ascii_lowercase) for i in range(length))
 
 def generate_jwt_token(user):
     user_object = Employee.objects.get(pk=user['instructor_id'])

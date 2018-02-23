@@ -1,5 +1,6 @@
 FROM frolvlad/alpine-python3
 RUN apk add --no-cache sqlite
+RUN apk add --no-cache libmagic
 WORKDIR /src
 ADD . .
 EXPOSE 80
