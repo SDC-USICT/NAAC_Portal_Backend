@@ -103,15 +103,17 @@ def login(request):
         a = Employee.objects.filter(instructor_id=username)
         if a.exists():
             import hashlib
-            print ((str(a[0].password) + str(a[0].salt)).encode('utf-8'))
-            print (request)
+            print((str(a[0].password) + str(a[0].salt)).encode('utf-8'))
+            print(request)
             if hashlib.md5( ( str(a[0].salt) + str(a[0].password) + str(ck)  ).encode('utf-8') ).hexdigest() == password:
                 a = a[0]
                 serializer = EmployeeSerializer(a)
                 token = generate_jwt_token(serializer.data)
+                csrf = setCsrf(username)
                 res = {
                     'user': serializer.data,
-                    'token': token
+                    'token': token,
+                    'csrf': csrf
                 }
                 e = Employee.objects.get(instructor_id=username)
                 e.salt = None
@@ -471,6 +473,23 @@ def post_data(request):
     mdata = copy.deepcopy(data)
     kls = request['kls']
     klass = eval(kls)
+    print("reqdbbh")
+    print(request)
+    emplid = request['data'][0]['employee']
+    print(emplid)
+    csrf = request['csrf']
+    try:
+        empl = Employee.objects.get(instructor_id=emplid)
+        csrfToken = empl.csrf_token
+        if csrf != csrfToken:
+            res = {
+                'error':'true'
+            }
+            return JsonResponse(res, safe=False)
+    except Exception as e:
+        print(e)
+
+
 
     coauthor_classes = [
         'Book',
@@ -607,10 +626,12 @@ def delete_data(request):
 @authentication_classes((JSONWebTokenAuthentication,))
 def employee_details(request):
     request = json.loads(request.body.decode('utf-8'))
-
     empid = request['empid']
-    e = Employee.objects.get(instructor_id=empid)
-    res = EmployeeSerializer(e)
+    try:
+        e = Employee.objects.get(instructor_id=empid)
+        res = EmployeeSerializer(e)
+    except Exception as e:
+        print(e)
     return JsonResponse((res.data), safe=False)
 
 
@@ -618,6 +639,7 @@ def employee_details(request):
 @require_http_methods(["POST"])
 def update_emp_details(request):
     request = json.loads(request.body.decode('utf-8'))
+    csrf = request['csrf']
     request = request['data']
     username = request['instructor_id']
     name = request['name']
@@ -627,19 +649,34 @@ def update_emp_details(request):
     date_join = request['date_of_joining']
     romm = request['room_no']
     school = request['school']
-
+    res = {}
     try:
-        a, created = Employee.objects.update_or_create(instructor_id=username, defaults ={'name':name, 'email' : email, 'phone' : phone,'designation' : designation, 'date_of_joining' : date_join, 'room_no' : romm,'school':school })
-        res = EmployeeSerializer(a)
-        return JsonResponse((res.data), safe=False, status=200)
-    except Exception:
-        tc = traceback.format_exc()
-        print (tc)
+        emp = Employee.objects.get(instructor_id=username)
+        csrfToken = emp.csrf_token
+        print(csrfToken)
+        if csrf == csrfToken:
+            try:
+                a, created = Employee.objects.update_or_create(instructor_id=username, defaults ={'name':name, 'email' : email, 'phone' : phone,'designation' : designation, 'date_of_joining' : date_join, 'room_no' : romm,'school':school })
+                res = EmployeeSerializer(a)
+                return JsonResponse((res.data), safe=False, status=200)
+            except Exception:
+                tc = traceback.format_exc()
+                print (tc)
+                res = {
+                    'error': 'true',
+                    'trace': str(tc)
+                }
+                return JsonResponse(res, safe=False, status=500)
+        else:
+            res = {
+                'error':'true'
+            }
+            return JsonResponse(res,safe=False)
+    except Exception as e:
         res = {
-            'error': 'true',
-            'trace': str(tc)
+            'error': 'true'
         }
-        return JsonResponse(res, safe=False, status=500)
+    return JsonResponse(res, safe=False,status=401)
 
 
 @api_view(['POST', 'GET'])
@@ -943,3 +980,22 @@ def generate_jwt_token(user):
     payload = jwt_payload_handler(user_object)
     token = jwt_encode_handler(payload)
     return token
+
+
+def setCsrf(empid):
+    csrfToken = randomword(16)
+    try:
+        emp = Employee.objects.get(instructor_id=empid)
+        emp.csrf_token = csrfToken
+        emp.save()
+        res = {
+            'success' : 'true',
+            'csrf': csrfToken
+        }
+    except Exception as e:
+        print(e)
+        res = {
+            'error': 'true'
+        }
+    print("counter")
+    return res

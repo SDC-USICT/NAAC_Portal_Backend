@@ -51,6 +51,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     room_no = models.CharField("Room No", max_length=10)
     school = models.CharField("School", max_length=10)
     salt = models.TextField(blank=True, null=True)
+    csrf_token = models.CharField("CSRF Token", max_length=20, default="null")
 
     #new argument
     is_active = models.BooleanField(default=True)
