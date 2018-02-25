@@ -2,12 +2,8 @@ import copy
 import json
 import os
 import urllib
-<<<<<<< HEAD
 import traceback
 import certifi
-=======
-
->>>>>>> 0c8d007... Patch: Captcha
 import django
 import magic
 
@@ -108,19 +104,14 @@ def login(request):
         import hashlib
         a = Employee.objects.filter(instructor_id=username)
         if a.exists():
-
-            print (a[0].password)
             if len(a[0].password) == 32:
-                print ('in iff')
                 pass_str = hashlib.md5((str(a[0].password) + str(ck)).encode('utf-8')).hexdigest()
             else:
-                print ('in else')
                 pass_hashed = hashlib.md5((a[0].password).encode('utf-8')).hexdigest()
                 pass_str = hashlib.md5((str(pass_hashed) + str(ck)).encode('utf-8') ).hexdigest()
             orig_pass = str(password)
 
             if pass_str == orig_pass :
-                print ('in pass_str == orig')
                 a = a[0]
                 serializer = EmployeeSerializer(a)
                 token = generate_jwt_token(serializer.data)
@@ -145,7 +136,6 @@ def login(request):
             }
     except Exception:
         tc = traceback.format_exc()
-        print (str(tc))
         res = {
             'error': 'true'
         }
@@ -731,9 +721,8 @@ def update_emp_details(request):
     try:
         emp = Employee.objects.get(instructor_id=username)
         csrfToken = emp.csrf_token
-        print(csrfToken)
-
-        if csrf != "null" and csrf == csrfToken:
+   
+        if csrf == csrfToken:
             try:
                 csrf = setCsrf(username)
                 a, created = Employee.objects.update_or_create(instructor_id=username, defaults ={'name':name, 'email' : email, 'phone' : phone,'designation' : designation, 'date_of_joining' : date_join, 'room_no' : romm,'school':school })
@@ -966,17 +955,10 @@ def image_clean(image):
     return False
 
 
-<<<<<<< HEAD
 @api_view(['POST'])
 @permission_classes((permissions.AllowAny,))
 def captcha_validator(req, format=None):
     request = json.loads(req.body.decode('utf-8'))
-=======
-@csrf_exempt
-@require_http_methods(["GET", "POST"])
-def captcha_validator(request):
-    request = json.loads(request.body.decode('utf-8'))
->>>>>>> 0c8d007... Patch: Captcha
     recaptcha_response = request.pop('captcha')
     url = 'https://www.google.com/recaptcha/api/siteverify'
     values = {
@@ -985,21 +967,13 @@ def captcha_validator(request):
     }
     data = urllib.parse.urlencode(values).encode()
     req = urllib.request.Request(url, data=data)
-<<<<<<< HEAD
     response = urllib.request.urlopen(req,  cafile=certifi.where())
     result = json.loads(response.read().decode())
-=======
-    response = urllib.request.urlopen(req)
-    result = json.loads(response.read().decode())
-    print (result)
->>>>>>> 0c8d007... Patch: Captcha
     if result['success']:
         return JsonResponse({}, status=200, safe=False)
 
     else:
-<<<<<<< HEAD
         return JsonResponse({}, status=401, safe=False)
-
 
 @api_view(['POST', 'GET'])
 @permission_classes((permissions.AllowAny,))
@@ -1076,6 +1050,3 @@ def logout(request):
             'error': 'true'
         }
     return JsonResponse(res,safe=False)
-=======
-        return JsonResponse({}, status=401, safe=False)
->>>>>>> 0c8d007... Patch: Captcha
