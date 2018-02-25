@@ -473,10 +473,8 @@ def post_data(request):
     mdata = copy.deepcopy(data)
     kls = request['kls']
     klass = eval(kls)
-    print("reqdbbh")
-    print(request)
     emplid = request['data'][0]['employee']
-    print(emplid)
+
     csrf = request['csrf']
     try:
         empl = Employee.objects.get(instructor_id=emplid)
@@ -999,3 +997,25 @@ def setCsrf(empid):
         }
     print("counter")
     return res
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def logout(request):
+    request = json.loads(request.body.decode('utf-8'))
+    print("req")
+    print(request)
+    empid = request['empid']
+    print(empid)
+    try:
+        employee = Employee.objects.get(instructor_id=empid)
+        employee.csrf_token = "null"
+        employee.save()
+        res = {
+            'success' : 'true'
+        }
+    except Exception as e:
+        print(e)
+        res = {
+            'error': 'true'
+        }
+    return JsonResponse(res,safe=False)
