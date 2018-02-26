@@ -479,7 +479,7 @@ def post_data(request):
     try:
         empl = Employee.objects.get(instructor_id=emplid)
         csrfToken = empl.csrf_token
-        if csrf != csrfToken:
+        if csrf == "null" or csrf != csrfToken:
             res = {
                 'error':'true'
             }
@@ -487,6 +487,8 @@ def post_data(request):
     except Exception as e:
         print(e)
 
+
+    csrf = setCsrf(emplid)
 
 
     coauthor_classes = [
@@ -537,7 +539,8 @@ def post_data(request):
 
 
     res = {
-        'success': 'true'
+        'success': 'true',
+        'csrf': csrf
     }
     klass = eval(kls)
     e = Employee.objects.get(instructor_id=empid)
@@ -652,8 +655,9 @@ def update_emp_details(request):
         emp = Employee.objects.get(instructor_id=username)
         csrfToken = emp.csrf_token
         print(csrfToken)
-        if csrf == csrfToken:
+        if csrf != "null" and csrf == csrfToken:
             try:
+                csrf = setCsrf(username)
                 a, created = Employee.objects.update_or_create(instructor_id=username, defaults ={'name':name, 'email' : email, 'phone' : phone,'designation' : designation, 'date_of_joining' : date_join, 'room_no' : romm,'school':school })
                 res = EmployeeSerializer(a)
                 return JsonResponse((res.data), safe=False, status=200)
