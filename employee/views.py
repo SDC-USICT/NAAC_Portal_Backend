@@ -103,8 +103,7 @@ def login(request):
         a = Employee.objects.filter(instructor_id=username)
         if a.exists():
             import hashlib
-            print((str(a[0].password) + str(a[0].salt)).encode('utf-8'))
-            print(request)
+
             if hashlib.md5( ( str(a[0].salt) + str(a[0].password) + str(ck)  ).encode('utf-8') ).hexdigest() == password:
                 a = a[0]
                 serializer = EmployeeSerializer(a)
@@ -655,6 +654,7 @@ def update_emp_details(request):
         emp = Employee.objects.get(instructor_id=username)
         csrfToken = emp.csrf_token
         print(csrfToken)
+
         if csrf != "null" and csrf == csrfToken:
             try:
                 csrf = setCsrf(username)
@@ -846,7 +846,7 @@ def changePassword(request):
         emp = Employee.objects.get(instructor_id=empId)
         if hashlib.md5(emp.password.encode('utf-8')).hexdigest() == curpass :
             import base64
-            print (base64.b64decode(newpass))
+
             emp.password = base64.b64decode(newpass)
             emp.save()
             res = {
@@ -868,14 +868,14 @@ def changePassword(request):
 def getdontfill(request):
     request = json.loads(request.body.decode('utf-8'))
     empid = request['empid']
-    print(request)
+
     e = Employee.objects.get(instructor_id=empid)
     d = DontFill.objects.filter(employee=e)
     res = {}
     if d.exists():
         res = serializers.serialize('json', d)
         res = (json.loads(res))[0]
-        print(res)
+
         del res['model']
         tmp = res['pk']
         res = res['fields']
@@ -889,12 +889,10 @@ def getdontfill(request):
 @api_view(['POST'])
 @authentication_classes((JSONWebTokenAuthentication,))
 def set_dontfill(request):
-    print(request.body.decode('utf-8'))
     request = json.loads(request.body.decode('utf-8'))
     pk = request.pop('pk')
     e = Employee.objects.get(instructor_id=pk)
     DontFill.objects.filter(employee=pk).update(**request)
-    print(request)
     res = {
     'success' : 'True'
     }
@@ -929,7 +927,6 @@ def captcha_validator(req, format=None):
     req = urllib.request.Request(url, data=data)
     response = urllib.request.urlopen(req,  cafile=certifi.where())
     result = json.loads(response.read().decode())
-    print (result)
     if result['success']:
         return JsonResponse({}, status=200, safe=False)
 
@@ -955,8 +952,6 @@ def get_dh_key(req, format=None):
         res = {
         'dh_key' : server_key
         }
-
-        print (res)
 
         e = Employee.objects.get(instructor_id = user_id)
         return JsonResponse(res, safe=False, status=200)
@@ -995,21 +990,17 @@ def setCsrf(empid):
             'csrf': csrfToken
         }
     except Exception as e:
-        print(e)
         res = {
             'error': 'true'
         }
-    print("counter")
     return res
 
 @csrf_exempt
 @require_http_methods(["POST"])
 def logout(request):
     request = json.loads(request.body.decode('utf-8'))
-    print("req")
-    print(request)
+
     empid = request['empid']
-    print(empid)
     try:
         employee = Employee.objects.get(instructor_id=empid)
         employee.csrf_token = "null"
@@ -1018,7 +1009,6 @@ def logout(request):
             'success' : 'true'
         }
     except Exception as e:
-        print(e)
         res = {
             'error': 'true'
         }
