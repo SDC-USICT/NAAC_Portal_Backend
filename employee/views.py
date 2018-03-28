@@ -478,10 +478,17 @@ def subjectTaken(request):
 @api_view(['POST', 'GET'])
 @authentication_classes((JSONWebTokenAuthentication,))
 def get_data(request):
+
+    id = request.user
+
     request = json.loads(request.body.decode('utf-8'))
 
     empid = request['empid']
     kls = request['kls']
+
+    if str(id) != str(empid):
+        return JsonResponse({}, safe=False, status=401)
+
 
     arr = []
     for m in django.apps.apps.get_models():
@@ -671,8 +678,12 @@ def delete_data(request):
 @api_view(['POST', 'GET'])
 @authentication_classes((JSONWebTokenAuthentication,))
 def employee_details(request):
+    id = request.user
     request = json.loads(request.body.decode('utf-8'))
     empid = request['empid']
+
+    if str(id) != str(empid):
+        return JsonResponse({}, safe=False, status=401)
     try:
         e = Employee.objects.get(instructor_id=empid)
         res = EmployeeSerializer(e)
@@ -684,6 +695,8 @@ def employee_details(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def update_emp_details(request):
+    id = request.user
+
     request = json.loads(request.body.decode('utf-8'))
     csrf = request['csrf']
     request = request['data']
@@ -696,6 +709,10 @@ def update_emp_details(request):
     romm = request['room_no']
     school = request['school']
     res = {}
+
+    if str(id) != str(username) :
+        return JsonResponse({}, safe=False, status=401)
+
     try:
         emp = Employee.objects.get(instructor_id=username)
         csrfToken = emp.csrf_token
@@ -882,8 +899,13 @@ def forgot_password(request):
 @api_view(['POST', 'GET'])
 @authentication_classes((JSONWebTokenAuthentication,))
 def getdontfill(request):
+    id = request.user
     request = json.loads(request.body.decode('utf-8'))
     empid = request['empid']
+
+    if str(id) != str(empid):
+        return JsonResponse({}, safe=False, status=401)
+
 
     e = Employee.objects.get(instructor_id=empid)
     d = DontFill.objects.filter(employee=e)
