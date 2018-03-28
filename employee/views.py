@@ -100,11 +100,16 @@ def login(request):
     password = request['password']
     ck = request['ck']
     try:
+        import hashlib
         a = Employee.objects.filter(instructor_id=username)
         if a.exists():
-            import hashlib
-
-            if hashlib.md5( ( str(a[0].salt) + str(a[0].password) + str(ck)  ).encode('utf-8') ).hexdigest() == password:
+            if len(a[0].password) == 32:
+                pass_str = hashlib.md5((str(a[0].password) + str(ck)).encode('utf-8')).hexdigest()
+            else:
+                pass_hashed = hashlib.md5((a[0].password).encode('utf-8')).hexdigest()
+                pass_str = hashlib.md5((str(pass_hashed) + str(ck)).encode('utf-8') ).hexdigest()
+            orig_pass = hashlib.md5((str(password) + str(ck)).encode('utf-8') ).hexdigest()
+            if pass_str == orig_pass :
                 a = a[0]
                 serializer = EmployeeSerializer(a)
                 token = generate_jwt_token(serializer.data)
@@ -120,7 +125,7 @@ def login(request):
                 return JsonResponse(res, status=201)
             else:
                 res = {
-                    'error' : 'Password did not match!'
+                    'error': 'Password did not match!'
                 }
                 return JsonResponse(res, status=401)
         else:
@@ -135,6 +140,41 @@ def login(request):
         }
 
     return JsonResponse(res, safe=False)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def changePassword(request):
+    request = json.loads(request.body.decode('utf-8'))
+    curpass = request["curpass"]
+    newpass = request["newpass"]
+    confpass = request["confpass"]
+    empId = request["loginid"]
+    ck = request["ck"]
+    if newpass == confpass:
+        import hashlib
+        emp = Employee.objects.get(instructor_id=empId)
+        pass_orig = hashlib.md5((str(curpass) + str(ck)).encode('utf-8')).hexdigest()
+        if len(emp.password) == 32:
+            pass_str = hashlib.md5((str(emp.password) + str(ck)).encode('utf-8')).hexdigest()
+        else:
+            pass_hashed = hashlib.md5((str(emp.password)).encode('utf-8')).hexdigest()
+            pass_str = hashlib.md5((str(pass_hashed) + str(ck)).encode('utf-8')).hexdigest()
+        if pass_orig == pass_str:
+            emp.password = newpass
+            emp.save()
+            res = {
+                "success": 'true'
+            }
+        else:
+            res = {
+                "error": 'true'
+            }
+    else:
+        res = {
+            "mod":'true'
+        }
+    return JsonResponse(res, safe=False)
+
 
 
 @api_view(['POST'])
@@ -833,36 +873,6 @@ def forgot_password(request):
     return JsonResponse(res, safe=False)
 
 
-@csrf_exempt
-@require_http_methods(["POST"])
-def changePassword(request):
-    request = json.loads(request.body.decode('utf-8'))
-    curpass = request["curpass"]
-    newpass = request["newpass"]
-    confpass = request["confpass"]
-    empId = request["loginid"]
-    if newpass == confpass:
-        import hashlib
-        emp = Employee.objects.get(instructor_id=empId)
-        if hashlib.md5(emp.password.encode('utf-8')).hexdigest() == curpass :
-            import base64
-
-            emp.password = base64.b64decode(newpass)
-            emp.save()
-            res = {
-                "success":'true'
-            }
-        else:
-            res = {
-                "error":'true'
-            }
-    else:
-        res = {
-            "mod":'true'
-        }
-    return JsonResponse(res, safe=False)
-
-
 @api_view(['POST', 'GET'])
 @authentication_classes((JSONWebTokenAuthentication,))
 def getdontfill(request):
@@ -940,20 +950,16 @@ def get_dh_key(req, format=None):
     request = json.loads(req.body.decode('utf-8'))
     try:
         user_id = request.pop('empid')
-
+        e = Employee.objects.get(instructor_id=user_id)
         sb = 5
         secret = 2
-
-        server_key =  randomword(5)
-        e = Employee.objects.get(instructor_id=user_id)
+        server_key = randomword(5)
         e.salt = server_key
         e.save()
-        dhkey_client = (int(sb) ** secret) % int(user_id)
+        server_key = e.salt
         res = {
         'dh_key' : server_key
         }
-
-        e = Employee.objects.get(instructor_id = user_id)
         return JsonResponse(res, safe=False, status=200)
     except:
         tc = traceback.format_exc()
