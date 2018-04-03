@@ -108,7 +108,8 @@ def login(request):
             else:
                 pass_hashed = hashlib.md5((a[0].password).encode('utf-8')).hexdigest()
                 pass_str = hashlib.md5((str(pass_hashed) + str(ck)).encode('utf-8') ).hexdigest()
-            orig_pass = hashlib.md5((str(password) + str(ck)).encode('utf-8') ).hexdigest()
+            orig_pass = str(password)
+
             if pass_str == orig_pass :
                 a = a[0]
                 serializer = EmployeeSerializer(a)
@@ -150,25 +151,30 @@ def changePassword(request):
     confpass = request["confpass"]
     empId = request["loginid"]
     ck = request["ck"]
-    if newpass == confpass:
-        import hashlib
-        emp = Employee.objects.get(instructor_id=empId)
-        pass_orig = hashlib.md5((str(curpass) + str(ck)).encode('utf-8')).hexdigest()
-        if len(emp.password) == 32:
-            pass_str = hashlib.md5((str(emp.password) + str(ck)).encode('utf-8')).hexdigest()
-        else:
-            pass_hashed = hashlib.md5((str(emp.password)).encode('utf-8')).hexdigest()
-            pass_str = hashlib.md5((str(pass_hashed) + str(ck)).encode('utf-8')).hexdigest()
-        if pass_orig == pass_str:
-            emp.password = newpass
-            emp.save()
-            res = {
-                "success": 'true'
-            }
-        else:
-            res = {
-                "error": 'true'
-            }
+    print("new")
+    print(newpass)
+    if newpass != "" and newpass == confpass:
+        try:
+            import hashlib
+            emp = Employee.objects.get(instructor_id=empId)
+            pass_orig = str(curpass)
+            if len(emp.password) == 32:
+                pass_str = hashlib.md5((str(emp.password) + str(ck)).encode('utf-8')).hexdigest()
+            else:
+                pass_hashed = hashlib.md5((str(emp.password)).encode('utf-8')).hexdigest()
+                pass_str = hashlib.md5((str(pass_hashed) + str(ck)).encode('utf-8')).hexdigest()
+            if pass_orig == pass_str:
+                emp.password = newpass
+                emp.save()
+                res = {
+                    "success": 'true'
+                }
+            else:
+                res = {
+                    "error": 'true'
+                }
+        except Exception:
+            print(str(traceback.format_exc()))
     else:
         res = {
             "mod":'true'
@@ -711,7 +717,7 @@ def update_emp_details(request):
                 return JsonResponse(res, safe=False, status=500)
         else:
             res = {
-                'error':'true'
+                'error':'gggg'
             }
             return JsonResponse(res,safe=False)
     except Exception as e:
