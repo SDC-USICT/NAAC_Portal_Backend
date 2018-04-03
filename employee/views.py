@@ -98,19 +98,25 @@ def login(request):
     request = json.loads(request.body.decode('utf-8'))
     username = request['empid']
     password = request['password']
+    print (password)
     ck = request['ck']
     try:
         import hashlib
         a = Employee.objects.filter(instructor_id=username)
         if a.exists():
+
+            print (a[0].password)
             if len(a[0].password) == 32:
+                print ('in iff')
                 pass_str = hashlib.md5((str(a[0].password) + str(ck)).encode('utf-8')).hexdigest()
             else:
+                print ('in else')
                 pass_hashed = hashlib.md5((a[0].password).encode('utf-8')).hexdigest()
                 pass_str = hashlib.md5((str(pass_hashed) + str(ck)).encode('utf-8') ).hexdigest()
             orig_pass = str(password)
 
             if pass_str == orig_pass :
+                print ('in pass_str == orig')
                 a = a[0]
                 serializer = EmployeeSerializer(a)
                 token = generate_jwt_token(serializer.data)
@@ -142,17 +148,22 @@ def login(request):
 
     return JsonResponse(res, safe=False)
 
-@csrf_exempt
-@require_http_methods(["POST"])
+
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def changePassword(request):
+    id = request.user
     request = json.loads(request.body.decode('utf-8'))
     curpass = request["curpass"]
     newpass = request["newpass"]
     confpass = request["confpass"]
     empId = request["loginid"]
     ck = request["ck"]
-    print("new")
-    print(newpass)
+
+    if str(id) != str(empId):
+        return JsonResponse({}, safe=False, status=401)
+
+
     if newpass != "" and newpass == confpass:
         try:
             import hashlib
@@ -692,8 +703,8 @@ def employee_details(request):
     return JsonResponse((res.data), safe=False)
 
 
-@csrf_exempt
-@require_http_methods(["POST"])
+@api_view(['POST', 'GET'])
+@authentication_classes((JSONWebTokenAuthentication,))
 def update_emp_details(request):
     id = request.user
 
