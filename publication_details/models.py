@@ -67,7 +67,7 @@ class BookChapters(models.Model):
 class Book(models.Model):
     employee = models.ForeignKey(Employee, related_name='employee_book', on_delete=models.PROTECT)
     title = models.CharField(max_length=100, verbose_name='Title of Book', blank=True, null=True)
-    isbn = models.IntegerField('ISBN')
+    isbn = models.IntegerField('ISBN', null=True)
     year = models.CharField("Year",max_length=4)
     coauthor = models.TextField(max_length=200, verbose_name='Co Authors',blank=True,null=True)
     page_no_start = models.IntegerField('Page number starting')
