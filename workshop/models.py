@@ -5,7 +5,7 @@ from employee.models import Employee
 
 
 class Workshop(models.Model):
-    employee = models.ForeignKey(to=Employee, verbose_name='Employee ID')
+    employee = models.ForeignKey(to=Employee, verbose_name='Employee ID', on_delete=models.PROTECT)
     title = models.CharField(verbose_name = "Name",max_length=100)
     role = models.CharField(verbose_name = "Role",max_length=100)
     date = models.TextField(verbose_name = "Date", blank=True, null=True)

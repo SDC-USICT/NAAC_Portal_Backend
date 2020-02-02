@@ -5,7 +5,7 @@ from employee.models import Employee
 
 
 class JournalPapers(models.Model):
-    employee = models.ForeignKey(Employee, related_name='employee_jp', verbose_name='Employee ID')
+    employee = models.ForeignKey(Employee, related_name='employee_jp', verbose_name='Employee ID', on_delete=models.PROTECT)
     title = models.CharField("Title of Paper",max_length=100, blank=True, null=True)
     name = models.CharField("Journal Name with Publisher",max_length=100)
     publisher = models.CharField("Journal Name with Publisher",max_length=100)
@@ -28,7 +28,7 @@ class JournalPapers(models.Model):
 
 
 class Conference(models.Model):
-    employee = models.ForeignKey(Employee, related_name='employee_conf', verbose_name='Employee ID')
+    employee = models.ForeignKey(Employee, related_name='employee_conf', verbose_name='Employee ID', on_delete=models.PROTECT)
     title = models.CharField("Title of Paper",max_length=100, blank=True, null=True)
     name_and_publisher = models.CharField('Name & Publisher', max_length=100)
     issue_no = models.IntegerField('Issue no')
@@ -49,7 +49,7 @@ class Conference(models.Model):
 
 
 class BookChapters(models.Model):
-    employee = models.ForeignKey(Employee, related_name='employee_book_chapter')
+    employee = models.ForeignKey(Employee, related_name='employee_book_chapter', on_delete=models.PROTECT)
     title = models.CharField("Title of Book Chapter",max_length=100, blank=True,null=True)
     book_title_and_publisher = models.CharField("Book Title with Publisher",max_length=100)
     page_no = models.IntegerField("Page No.")
@@ -65,7 +65,7 @@ class BookChapters(models.Model):
 
 
 class Book(models.Model):
-    employee = models.ForeignKey(Employee, related_name='employee_book')
+    employee = models.ForeignKey(Employee, related_name='employee_book', on_delete=models.PROTECT)
     title = models.CharField(max_length=100, verbose_name='Title of Book', blank=True, null=True)
     isbn = models.IntegerField('ISBN')
     year = models.CharField("Year",max_length=4)

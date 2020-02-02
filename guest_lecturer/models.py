@@ -5,7 +5,7 @@ from employee.models import Employee
 
 
 class GuestLecture(models.Model):
-    employee = models.ForeignKey(to=Employee, related_name='employee', verbose_name='Employee ID')
+    employee = models.ForeignKey(to=Employee, related_name='employee', verbose_name='Employee ID', on_delete=models.PROTECT)
     nature = models.CharField("Nature",max_length=100)
     institute = models.CharField("Institute Name",max_length=100)
     date = models.TextField("Date", blank=True, null=True)

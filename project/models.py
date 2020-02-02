@@ -5,7 +5,7 @@ from employee.models import Employee
 
 
 class Projects(models.Model):
-    employee = models.ForeignKey(to=Employee, related_name='employee_projects', verbose_name='Employee ID')
+    employee = models.ForeignKey(to=Employee, related_name='employee_projects', verbose_name='Employee ID', on_delete=models.PROTECT)
     title = models.CharField("Project Title",max_length=100)
     sponsors = models.TextField("Sponsoring Agency")
     date_of_award = models.TextField("Date of Award")

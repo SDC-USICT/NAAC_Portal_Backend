@@ -6,7 +6,7 @@ from employee.models import Employee
 
 
 class Professional(models.Model):
-    employee = models.ForeignKey(to=Employee, verbose_name='Employee ID')
+    employee = models.ForeignKey(to=Employee, verbose_name='Employee ID', on_delete=models.PROTECT)
     title = models.CharField("Highest Qualification",max_length=100)
     undergraduation_course = models.CharField("Undergraduation Course",max_length=100)
     undergraduation_stream = models.CharField("Undergraduation Stream",max_length=100)

@@ -8,7 +8,7 @@ from django.contrib.auth.models import PermissionsMixin
 class EmployeeManager(BaseUserManager):
     use_in_migrations = True
 
-    def _create_user(self, instructor_id, email, password=None, **extra_fields):
+    def _create_user(self, email, password=None, **extra_fields):
         """
         Creates and saves a User with the given email and password.
         """
@@ -16,11 +16,11 @@ class EmployeeManager(BaseUserManager):
             raise ValueError('The given email must be set')
         if not password:
             raise ValueError('The password must be set')
-        if not instructor_id:
+        if not extra_fields['instructor_id']:
             raise ValueError('Instructor ID is not set')
 
         email = self.normalize_email(email)
-        user = self.model(email=email, instructor_id=instructor_id, **extra_fields)
+        user = self.model(email=email,  **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -44,7 +44,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     instructor_id = models.CharField(max_length=10, primary_key=True, verbose_name='Employee ID')
     name = models.CharField("Name", max_length=200)
     email = models.EmailField("Email",max_length=200)
-    phone = models.BigIntegerField("Phone")
+    phone = models.BigIntegerField("Phone", blank=True, null=True)
     date_of_joining = models.TextField("Date of Joining", max_length=1000, blank=True, null=True)
     password = models.CharField("Password", max_length=100)
     designation = models.CharField("Designation", max_length=100)
@@ -57,7 +57,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_allowed = models.BooleanField(default=False, blank=True)
     is_staff = models.BooleanField(default=False)
-    REQUIRED_FIELDS = ['password']
+    REQUIRED_FIELDS = ['password', 'email']
     USERNAME_FIELD = 'instructor_id'
     EMAIL_FIELD='email'
 
@@ -80,7 +80,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
 
 
 class DontFill(models.Model):
-    employee = models.ForeignKey(Employee, related_name='employee_fs', primary_key=True)
+    employee = models.ForeignKey(Employee, related_name='employee_fs', primary_key=True, on_delete=models.PROTECT)
     awards = models.BooleanField("Awards", default=False)
     extra = models.BooleanField("Extra", default=False)
     guest_lecture = models.BooleanField("GuestLecturer", default=False)

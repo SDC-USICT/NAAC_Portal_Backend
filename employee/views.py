@@ -108,7 +108,8 @@ def login(request):
                 pass_str = hashlib.md5((str(a[0].password) + str(ck)).encode('utf-8')).hexdigest()
             else:
                 pass_hashed = hashlib.md5((a[0].password).encode('utf-8')).hexdigest()
-                pass_str = hashlib.md5((str(pass_hashed) + str(ck)).encode('utf-8') ).hexdigest()
+                pass_str = hashlib.md5((str(a[0].salt) + str(pass_hashed) + str(ck)).encode('utf-8') ).hexdigest()
+
             orig_pass = str(password)
 
             if pass_str == orig_pass :
